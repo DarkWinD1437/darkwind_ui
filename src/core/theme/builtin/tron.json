@@ -1,0 +1,31 @@
+{
+  "id": "tron",
+  "name": "Tron",
+  "colors": {
+    "accentR": 170,
+    "accentG": 207,
+    "accentB": 209,
+    "black": "#000000",
+    "lightBlack": "#05080d",
+    "grey": "#262828"
+  },
+  "fonts": {
+    "main": "United Sans Medium",
+    "mainLight": "United Sans Light",
+    "mono": "Fira Mono"
+  },
+  "terminal": {
+    "cursorStyle": "block",
+    "foreground": "#aacfd1",
+    "background": "#05080d",
+    "cursor": "#aacfd1",
+    "cursorAccent": "#aacfd1",
+    "selection": "rgba(170,207,209,0.3)"
+  },
+  "globe": {
+    "base": "#000000",
+    "marker": "#aacfd1",
+    "pin": "#aacfd1",
+    "satellite": "#aacfd1"
+  }
+}

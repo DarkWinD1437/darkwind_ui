@@ -1,0 +1,31 @@
+{
+  "id": "interstellar",
+  "name": "Interstellar",
+  "colors": {
+    "accentR": 3,
+    "accentG": 169,
+    "accentB": 244,
+    "black": "#f3f3f3",
+    "lightBlack": "#dedede",
+    "grey": "#bfbfbf"
+  },
+  "fonts": {
+    "main": "United Sans Medium",
+    "mainLight": "United Sans Light",
+    "mono": "Fira Mono"
+  },
+  "terminal": {
+    "cursorStyle": "bar",
+    "foreground": "#03A9F4",
+    "background": "#dedede",
+    "cursor": "#03A9F4",
+    "cursorAccent": "#03A9F4",
+    "selection": "rgba(3,169,244,0.3)"
+  },
+  "globe": {
+    "base": "#03A9F4",
+    "marker": "#03A9F4",
+    "pin": "#03A9F4",
+    "satellite": "#03A9F4"
+  }
+}

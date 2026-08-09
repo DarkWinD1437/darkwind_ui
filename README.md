@@ -4,7 +4,7 @@ Terminal de escritorio con estética cyberpunk, construido desde cero con **Vue 
 
 ## Estado del proyecto
 
-🚧 En desarrollo activo. Setup base del proyecto (Tauri + Vue + linting + branding) completo, construcción de features en curso.
+🚧 En desarrollo activo. Infraestructura base funcional: persistencia de configuración, sistema de temas, animación de arranque y layout principal ya operativos. Terminal, paneles de sistema, explorador de archivos y teclado táctil aún en construcción.
 
 ## Características
 
@@ -12,6 +12,7 @@ Terminal de escritorio con estética cyberpunk, construido desde cero con **Vue 
 - Paneles de sistema en vivo: CPU, RAM, procesos, red, batería, GeoIP
 - Temas personalizables (JSON + variables CSS)
 - Teclado táctil multi-idioma con dead-keys
+- Interfaz en inglés o español, con detección automática del idioma del sistema
 - Explorador de archivos integrado, sincronizado con la terminal activa
 - Globo 3D con visualización de conexiones de red activas
 - Panel de GPU (uso/temperatura), soporte multi-fabricante (NVIDIA, AMD, Intel)

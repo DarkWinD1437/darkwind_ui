@@ -1,0 +1,31 @@
+{
+  "id": "apollo",
+  "name": "Apollo",
+  "colors": {
+    "accentR": 235,
+    "accentG": 235,
+    "accentB": 235,
+    "black": "#000000",
+    "lightBlack": "#191919",
+    "grey": "#262827"
+  },
+  "fonts": {
+    "main": "United Sans Medium",
+    "mainLight": "United Sans Light",
+    "mono": "Fira Mono"
+  },
+  "terminal": {
+    "cursorStyle": "block",
+    "foreground": "#ebebeb",
+    "background": "#191919",
+    "cursor": "#ebebeb",
+    "cursorAccent": "#ebebeb",
+    "selection": "rgba(235,235,235,0.3)"
+  },
+  "globe": {
+    "base": "#000000",
+    "marker": "#ebebeb",
+    "pin": "#ebebeb",
+    "satellite": "#ebebeb"
+  }
+}

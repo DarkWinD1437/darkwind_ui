@@ -20,16 +20,22 @@
     "@tauri-apps/plugin-log": "^2.9.0",
     "@tauri-apps/plugin-opener": "^2",
     "@tauri-apps/plugin-window-state": "^2.4.1",
+    "augmented-ui": "^2.0.0",
+    "howler": "^2.2.4",
     "pinia": "^4.0.2",
-    "vue": "^3.5.13"
+    "vue": "^3.5.13",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@tauri-apps/cli": "^2",
+    "@types/howler": "^2.2.13",
+    "@types/node": "^26.2.0",
     "@vitejs/plugin-vue": "^5.2.1",
     "eslint": "^10.8.1",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-vue": "^10.10.0",
+    "globals": "^17.9.0",
     "prettier": "^3.9.6",
     "typescript": "~5.6.2",
     "typescript-eslint": "^8.66.0",

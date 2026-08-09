@@ -1,0 +1,40 @@
+{
+  "id": "navy",
+  "name": "Navy",
+  "colors": {
+    "accentR": 20,
+    "accentG": 119,
+    "accentB": 205,
+    "black": "#282a36",
+    "lightBlack": "#222430",
+    "grey": "#222430",
+    "ansi": {
+      "red": "#ff5c57",
+      "green": "#5af78e",
+      "yellow": "#f3f99d",
+      "blue": "#57c7ff",
+      "magenta": "#ff6ac1",
+      "cyan": "#9aedfe",
+      "white": "#f1f1f0"
+    }
+  },
+  "fonts": {
+    "main": "United Sans Medium",
+    "mainLight": "United Sans Light",
+    "mono": "Fira Mono"
+  },
+  "terminal": {
+    "cursorStyle": "block",
+    "foreground": "#87b7cc",
+    "background": "#222430",
+    "cursor": "#87b7cc",
+    "cursorAccent": "#16739c",
+    "selection": "rgba(239,240,235,0.3)"
+  },
+  "globe": {
+    "base": "#16739c",
+    "marker": "#ad0c0c",
+    "pin": "#04b80a",
+    "satellite": "#e3f213"
+  }
+}

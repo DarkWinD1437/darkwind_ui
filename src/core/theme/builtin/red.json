@@ -1,0 +1,31 @@
+{
+  "id": "red",
+  "name": "Red",
+  "colors": {
+    "accentR": 204,
+    "accentG": 0,
+    "accentB": 34,
+    "black": "#000000",
+    "lightBlack": "#090B0A",
+    "grey": "#0f2e3d"
+  },
+  "fonts": {
+    "main": "United Sans Medium",
+    "mainLight": "United Sans Light",
+    "mono": "Fira Mono"
+  },
+  "terminal": {
+    "cursorStyle": "underline",
+    "foreground": "#cc0022",
+    "background": "#090B0A",
+    "cursor": "#cc0022",
+    "cursorAccent": "#cc0022",
+    "selection": "rgba(204,0,34,0.3)"
+  },
+  "globe": {
+    "base": "#cc0022",
+    "marker": "#cc0022",
+    "pin": "#cc0022",
+    "satellite": "#cc0022"
+  }
+}

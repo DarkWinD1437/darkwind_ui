@@ -1,0 +1,31 @@
+{
+  "id": "blade",
+  "name": "Blade",
+  "colors": {
+    "accentR": 204,
+    "accentG": 94,
+    "accentB": 55,
+    "black": "#000000",
+    "lightBlack": "#090B0A",
+    "grey": "#262827"
+  },
+  "fonts": {
+    "main": "United Sans Medium",
+    "mainLight": "United Sans Light",
+    "mono": "Fira Mono"
+  },
+  "terminal": {
+    "cursorStyle": "underline",
+    "foreground": "#cc5e37",
+    "background": "#090B0A",
+    "cursor": "#cc5e37",
+    "cursorAccent": "#cc5e37",
+    "selection": "rgba(204,94,55,0.3)"
+  },
+  "globe": {
+    "base": "#cc5e37",
+    "marker": "#cc5e37",
+    "pin": "#cc5e37",
+    "satellite": "#cc5e37"
+  }
+}

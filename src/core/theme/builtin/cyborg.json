@@ -1,0 +1,40 @@
+{
+  "id": "cyborg",
+  "name": "Cyborg",
+  "colors": {
+    "accentR": 95,
+    "accentG": 215,
+    "accentB": 215,
+    "black": "#011f1f",
+    "lightBlack": "#0a3333",
+    "grey": "#034747",
+    "ansi": {
+      "red": "#ad3e5a",
+      "green": "#3cd66f",
+      "yellow": "#c5d63c",
+      "blue": "#3c4dd6",
+      "magenta": "#ad31ad",
+      "cyan": "#31adad",
+      "white": "#a3c2c2"
+    }
+  },
+  "fonts": {
+    "main": "United Sans Medium",
+    "mainLight": "United Sans Light",
+    "mono": "Fira Code"
+  },
+  "terminal": {
+    "cursorStyle": "block",
+    "foreground": "#a3c2c2",
+    "background": "#0a3333",
+    "cursor": "#5cffff",
+    "cursorAccent": "#85ff5c",
+    "selection": "#ffff5c"
+  },
+  "globe": {
+    "base": "#5c5cff",
+    "marker": "#eb0954",
+    "pin": "#85ff5c",
+    "satellite": "#ffff5c"
+  }
+}

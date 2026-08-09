@@ -1,0 +1,46 @@
+{
+  "id": "nord",
+  "name": "Nord",
+  "colors": {
+    "accentR": 216,
+    "accentG": 222,
+    "accentB": 233,
+    "black": "#3B4252",
+    "lightBlack": "#2E3440",
+    "grey": "#4c566a",
+    "ansi": {
+      "red": "#BF616A",
+      "green": "#A3BE8C",
+      "yellow": "#EBCB8B",
+      "blue": "#81A1C1",
+      "magenta": "#B48EAD",
+      "cyan": "#88C0D0",
+      "white": "#E5E9F0",
+      "brightRed": "#BF616A",
+      "brightGreen": "#A3BE8C",
+      "brightYellow": "#EBCB8B",
+      "brightBlue": "#81A1C1",
+      "brightMagenta": "#B48EAD",
+      "brightCyan": "#8FBCBB",
+      "brightWhite": "#ECEFF4"
+    }
+  },
+  "fonts": {
+    "main": "United Sans Medium",
+    "mainLight": "United Sans Light",
+    "mono": "Fira Mono"
+  },
+  "terminal": {
+    "cursorStyle": "block",
+    "foreground": "#D8DEE9",
+    "background": "#2E3440",
+    "cursor": "#D8DEE9",
+    "selection": "rgba(67, 76, 94, 0.8)"
+  },
+  "globe": {
+    "base": "#000000",
+    "marker": "#EBCB8B",
+    "pin": "#81A1C1",
+    "satellite": "#BF616A"
+  }
+}
