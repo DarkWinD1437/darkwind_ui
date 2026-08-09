@@ -6,10 +6,10 @@ pub struct BundledTheme {
     pub contents: &'static str,
 }
 
-// Embedded at compile time from the single source of truth in src/core/theme/builtin/.
-// Only base palettes are bundled — the legacy "-notype"/"-disrupted"/"-colorfilter" theme
-// variants relied on arbitrary injectCSS hacks, which this schema removes entirely, so
-// they have no equivalent to port.
+// Embebidos en tiempo de compilación desde la fuente única de verdad en
+// src/core/theme/builtin/. Solo se empaquetan las paletas base — las variantes
+// "-notype"/"-disrupted"/"-colorfilter" del original dependían de trucos arbitrarios de
+// injectCSS, que este schema elimina por completo, así que no tienen equivalente que portar.
 pub const BUNDLED_THEMES: &[BundledTheme] = &[
     BundledTheme {
         id: "apollo",

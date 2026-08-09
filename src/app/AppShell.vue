@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref } from "vue";
 import { audioManager } from "@/core/audio/audioManager";
+import TerminalPanel from "@/features/terminal/components/TerminalPanel.vue";
 
 const shellStage = ref<"collapsed" | "grown" | "hidden" | "shown">("collapsed");
 const titleVisible = ref(false);
@@ -53,8 +54,9 @@ async function playReveal(): Promise<void> {
 
   greeterMounted.value = false;
 
-  // Left/right module columns are populated in later phases (sysinfo panels, Fase 3) —
-  // this stagger loop faithfully reproduces the reveal timing even with zero children.
+  // Las columnas izquierda/derecha se llenan en fases posteriores (paneles de sysinfo,
+  // Fase 3) — este loop escalonado reproduce fielmente el timing de revelado incluso
+  // sin hijos todavía.
   columnsActivated.value = true;
   const left = document.querySelectorAll("#mod_column_left > div");
   const right = document.querySelectorAll("#mod_column_right > div");
@@ -103,6 +105,7 @@ onUnmounted(() => {
       <h1 v-if="greeterMounted" id="main_shell_greeting" :class="{ visible: greeterVisible }">
         Welcome back
       </h1>
+      <TerminalPanel v-else />
     </div>
   </section>
 
@@ -244,9 +247,9 @@ section.mod_column > :deep(div) {
   opacity: 0;
 }
 
-/* Separate from #main_shell so its clipped corners (data-augmented-ui) don't clip the
-   position:fixed title bar, which must stay glued to the viewport during the grow
-   animation instead of scaling with this box. */
+/* Separado de #main_shell para que sus esquinas recortadas (data-augmented-ui) no
+   recorten la barra de título position:fixed, que debe quedar pegada al viewport
+   durante la animación de crecimiento en vez de escalar junto con esta caja. */
 .main_shell_inner {
   width: 100%;
   height: 100%;

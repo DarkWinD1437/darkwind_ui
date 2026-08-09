@@ -4,11 +4,12 @@ Terminal de escritorio con estética cyberpunk, construido desde cero con **Vue 
 
 ## Estado del proyecto
 
-🚧 En desarrollo activo. Infraestructura base funcional: persistencia de configuración, sistema de temas, animación de arranque y layout principal ya operativos. Terminal, paneles de sistema, explorador de archivos y teclado táctil aún en construcción.
+🚧 En desarrollo activo. Infraestructura base y terminal ya operativos: persistencia de configuración, sistema de temas, animación de arranque, layout principal y una terminal real (PowerShell) multi-pestaña con PTY nativo en Rust. Paneles de sistema, explorador de archivos y teclado táctil aún en construcción.
 
 ## Características
 
-- Terminal real (shell) vía PTY nativo en Rust, multi-tab
+- Terminal real (shell) vía PTY nativo en Rust, multi-tab (hasta 5 pestañas)
+- Búsqueda en el scrollback de la terminal (Ctrl+F) — el original no tiene esto
 - Paneles de sistema en vivo: CPU, RAM, procesos, red, batería, GeoIP
 - Temas personalizables (JSON + variables CSS)
 - Teclado táctil multi-idioma con dead-keys

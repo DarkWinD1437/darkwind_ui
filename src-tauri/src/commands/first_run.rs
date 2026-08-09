@@ -3,10 +3,11 @@ use super::theme::BUNDLED_THEMES;
 use std::fs;
 use tauri::{AppHandle, Manager};
 
-// Mirrors src/_boot.js from the legacy eDEX-UI project: settings.json/shortcuts.json are
-// only written if missing (so user edits survive), while bundled themes are re-written on
-// every launch so they stay in sync with the app version — matching the original's actual
-// behavior (not gated by an existsSync check there either).
+// Replica el comportamiento de src/_boot.js del proyecto original: settings.json/
+// shortcuts.json solo se escriben si faltan (para que las ediciones del usuario
+// sobrevivan), mientras que los temas empaquetados se re-escriben en cada arranque
+// para mantenerse sincronizados con la versión de la app — igual al comportamiento
+// real del original (que tampoco los protege con un chequeo de existencia).
 pub fn mirror_defaults_on_first_run(app: &AppHandle) -> Result<(), String> {
     let config_dir = app.path().app_config_dir().map_err(|e| e.to_string())?;
     fs::create_dir_all(&config_dir).map_err(|e| e.to_string())?;

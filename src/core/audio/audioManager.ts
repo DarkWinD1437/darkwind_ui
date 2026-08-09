@@ -7,7 +7,7 @@ export interface SoundEffect {
 
 class NullSound implements SoundEffect {
   play(): void {
-    // Audio disabled or feedback sound suppressed — intentional no-op.
+    // Audio deshabilitado o sonido de feedback suprimido — no-op intencional.
   }
 }
 
@@ -35,8 +35,9 @@ const DEFAULT_CONFIG: AudioManagerConfig = {
   feedbackEnabled: true,
 };
 
-// Feedback sounds (stdout/stdin/folder/granted) fire on every keystroke or nav event —
-// `feedbackEnabled: false` mutes just those, matching the original's disableFeedbackAudio.
+// Los sonidos de feedback (stdout/stdin/folder/granted) suenan en cada tecla o evento de
+// navegación — `feedbackEnabled: false` silencia solo esos, igual que disableFeedbackAudio
+// en el original.
 const FEEDBACK_VOLUME = 0.4;
 
 export class AudioManager {

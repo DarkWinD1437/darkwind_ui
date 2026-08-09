@@ -30,9 +30,10 @@ onMounted(async () => {
   box-sizing: border-box;
 }
 
-/* AppShell's sections rely on percentage sizing resolving against <body> — same as the
-   original, which appends them directly to document.body with no wrapper. This wrapper
-   only exists as a Vue mount anchor, so it must not participate in layout. */
+/* Las secciones de AppShell dependen de que los tamaños en porcentaje se resuelvan
+   contra <body> — igual que el original, que las agrega directo a document.body sin
+   wrapper. Este wrapper solo existe como ancla de montaje de Vue, así que no debe
+   participar del layout. */
 .app-root {
   display: contents;
 }

@@ -1,8 +1,8 @@
 import { ref } from "vue";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 
-// AppShell/BootSequence are laid out entirely in vh/vw units, so this composable only
-// owns the fullscreen<->windowed toggle, not sizing.
+// AppShell/BootSequence están maquetados enteramente en unidades vh/vw, así que este
+// composable solo se encarga del toggle fullscreen<->ventana, no del tamaño.
 export function useViewportUnits() {
   const isFullscreen = ref(true);
 

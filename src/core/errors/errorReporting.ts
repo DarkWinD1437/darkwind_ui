@@ -1,8 +1,8 @@
 import type { App } from "vue";
 import { error as logError } from "@tauri-apps/plugin-log";
 
-// Forwards to the persistent log file backed by tauri-plugin-log, so frontend errors
-// survive past whatever DevTools console happened to be open at the time.
+// Reenvía al archivo de log persistente respaldado por tauri-plugin-log, así los errores
+// del frontend sobreviven más allá de que la consola de DevTools haya estado abierta o no.
 export function installErrorReporting(app: App): void {
   app.config.errorHandler = (err, _instance, info) => {
     logError(`[vue] ${String(err)} (${info})`);

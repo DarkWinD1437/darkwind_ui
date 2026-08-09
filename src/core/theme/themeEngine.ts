@@ -29,7 +29,7 @@ async function loadThemeFonts(theme: DarkwindTheme): Promise<void> {
   );
 }
 
-// Belt-and-suspenders strip even though theme values are Zod-validated before reaching here.
+// Limpieza extra de seguridad, aunque los valores del tema ya pasaron por Zod antes de llegar acá.
 function purifyCss(value: string): string {
   return value.replace(/[<]/g, "");
 }
@@ -41,8 +41,8 @@ export async function applyTheme(theme: DarkwindTheme): Promise<void> {
 
   const style = document.createElement("style");
   style.className = "theming";
-  // textContent (not innerHTML) means these values can never be parsed as markup,
-  // unlike the original's `document.head.innerHTML += ...` pattern.
+  // textContent (no innerHTML) hace que estos valores nunca puedan interpretarse como
+  // markup, a diferencia del patrón `document.head.innerHTML += ...` del original.
   style.textContent = `
     :root {
       --font_main: "${purifyCss(theme.fonts.main)}";
