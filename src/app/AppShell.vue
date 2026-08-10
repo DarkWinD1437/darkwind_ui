@@ -1,7 +1,20 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref } from "vue";
 import { audioManager } from "@/core/audio/audioManager";
+import { readSettings } from "@/core/persistence/settingsRepository";
 import TerminalPanel from "@/features/terminal/components/TerminalPanel.vue";
+import ClockPanel from "@/features/sysinfo/components/ClockPanel.vue";
+import SysinfoPanel from "@/features/sysinfo/components/SysinfoPanel.vue";
+import HardwareInspectorPanel from "@/features/sysinfo/components/HardwareInspectorPanel.vue";
+import RamwatcherPanel from "@/features/sysinfo/components/RamwatcherPanel.vue";
+import CpuinfoPanel from "@/features/sysinfo/components/CpuinfoPanel.vue";
+import GpuPanel from "@/features/sysinfo/components/GpuPanel.vue";
+import ToplistPanel from "@/features/sysinfo/components/ToplistPanel.vue";
+import NetstatPanel from "@/features/sysinfo/components/NetstatPanel.vue";
+import ConninfoPanel from "@/features/sysinfo/components/ConninfoPanel.vue";
+import { useSysinfoStore } from "@/features/sysinfo/stores/sysinfo.store";
+
+const sysinfoStore = useSysinfoStore();
 
 const shellStage = ref<"collapsed" | "grown" | "hidden" | "shown">("collapsed");
 const titleVisible = ref(false);
@@ -54,9 +67,11 @@ async function playReveal(): Promise<void> {
 
   greeterMounted.value = false;
 
-  // Las columnas izquierda/derecha se llenan en fases posteriores (paneles de sysinfo,
-  // Fase 3) — este loop escalonado reproduce fielmente el timing de revelado incluso
-  // sin hijos todavía.
+  const settings = await readSettings().catch(() => null);
+  sysinfoStore.start(settings?.pingAddr);
+
+  // Loop escalonado que reproduce el timing de revelado del original panel por panel,
+  // en vez de que las 8 columnas aparezcan todas a la vez.
   columnsActivated.value = true;
   const left = document.querySelectorAll("#mod_column_left > div");
   const right = document.querySelectorAll("#mod_column_right > div");
@@ -79,6 +94,7 @@ onMounted(() => {
 
 onUnmounted(() => {
   document.body.setAttribute("class", "");
+  sysinfoStore.stop();
 });
 </script>
 
@@ -88,6 +104,10 @@ onUnmounted(() => {
       <p>PANEL</p>
       <p>SYSTEM</p>
     </h3>
+    <ClockPanel />
+    <SysinfoPanel />
+    <HardwareInspectorPanel />
+    <RamwatcherPanel />
   </section>
 
   <section
@@ -114,6 +134,11 @@ onUnmounted(() => {
       <p>PANEL</p>
       <p>NETWORK</p>
     </h3>
+    <CpuinfoPanel />
+    <GpuPanel />
+    <ToplistPanel />
+    <NetstatPanel />
+    <ConninfoPanel />
   </section>
 
   <section id="filesystem"></section>

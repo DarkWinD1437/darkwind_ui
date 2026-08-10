@@ -2,10 +2,16 @@ mod commands;
 mod state;
 
 use commands::first_run::mirror_defaults_on_first_run;
+use commands::geoip::{geoip_asn_lookup, geoip_lookup};
+use commands::gpu::sysinfo_gpu;
 use commands::pty::{pty_kill, pty_resize, pty_spawn, pty_status, pty_write};
 use commands::settings::{settings_read, settings_write, shortcuts_read, shortcuts_write};
+use commands::sysinfo::{
+    sysinfo_battery, sysinfo_cpu, sysinfo_disks, sysinfo_host, sysinfo_mem,
+    sysinfo_network_connections, sysinfo_network_ifaces, sysinfo_processes, sysinfo_tcp_ping,
+};
 use commands::theme::{theme_list, theme_read};
-use state::PtyState;
+use state::{PtyState, SysinfoState};
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -27,6 +33,7 @@ pub fn run() {
                 .build(),
         )
         .manage(PtyState::default())
+        .manage(SysinfoState::default())
         .setup(|app| {
             mirror_defaults_on_first_run(app.handle())?;
             Ok(())
@@ -42,7 +49,19 @@ pub fn run() {
             pty_write,
             pty_resize,
             pty_kill,
-            pty_status
+            pty_status,
+            sysinfo_cpu,
+            sysinfo_mem,
+            sysinfo_disks,
+            sysinfo_processes,
+            sysinfo_battery,
+            sysinfo_network_ifaces,
+            sysinfo_network_connections,
+            sysinfo_host,
+            sysinfo_tcp_ping,
+            sysinfo_gpu,
+            geoip_lookup,
+            geoip_asn_lookup
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
