@@ -21,6 +21,11 @@ export const useSysinfoStore = defineStore("sysinfo", {
     cpuPerCoreHistory: [] as number[][],
     gpu: null as client.GpuStats | null,
     gpuHistory: [] as number[],
+    // Historial separado de temperatura (no solo de carga) para el modal expandido de
+    // GpuPanel — misma lógica que cpuPerCoreHistory: la carga y la temperatura no
+    // siempre se mueven juntas (throttling, límites térmicos) y verlas por separado da
+    // más información real que un único gráfico de carga agrandado.
+    gpuTempHistory: [] as number[],
     mem: null as client.MemInfo | null,
     disks: [] as client.DiskInfo[],
     processes: [] as client.ProcessInfo[],
@@ -77,6 +82,10 @@ export const useSysinfoStore = defineStore("sysinfo", {
       if (gpu) {
         this.gpuHistory.push(gpu.loadPct);
         if (this.gpuHistory.length > HISTORY_LENGTH) this.gpuHistory.shift();
+        if (gpu.temperatureC > 0) {
+          this.gpuTempHistory.push(gpu.temperatureC);
+          if (this.gpuTempHistory.length > HISTORY_LENGTH) this.gpuTempHistory.shift();
+        }
       }
 
       const totals = ifaces.reduce<NetSample>(
