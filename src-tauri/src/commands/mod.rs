@@ -1,6 +1,8 @@
+pub mod filesystem;
 pub mod first_run;
 pub mod geoip;
 pub mod gpu;
+pub mod keyboard;
 pub mod pty;
 pub mod settings;
 pub mod sysinfo;

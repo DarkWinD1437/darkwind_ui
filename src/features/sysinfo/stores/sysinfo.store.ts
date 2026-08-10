@@ -15,6 +15,10 @@ export const useSysinfoStore = defineStore("sysinfo", {
   state: () => ({
     cpu: null as client.CpuInfo | null,
     cpuHistory: [] as number[],
+    // Un historial por núcleo (no solo el agregado de cpuHistory) para el gráfico por
+    // núcleo del modal expandido de CpuinfoPanel — la grilla de barras compacta ya
+    // muestra el valor actual, pero no la tendencia de cada núcleo por separado.
+    cpuPerCoreHistory: [] as number[][],
     gpu: null as client.GpuStats | null,
     gpuHistory: [] as number[],
     mem: null as client.MemInfo | null,
@@ -59,6 +63,16 @@ export const useSysinfoStore = defineStore("sysinfo", {
 
       this.cpuHistory.push(cpu.globalUsage);
       if (this.cpuHistory.length > HISTORY_LENGTH) this.cpuHistory.shift();
+
+      // Si cambia la cantidad de núcleos (no debería pasar en una sesión, pero por las
+      // dudas) se reinicia el historial en vez de arrastrar arrays de otro tamaño.
+      if (this.cpuPerCoreHistory.length !== cpu.perCore.length) {
+        this.cpuPerCoreHistory = cpu.perCore.map(() => []);
+      }
+      cpu.perCore.forEach((usage, i) => {
+        this.cpuPerCoreHistory[i].push(usage);
+        if (this.cpuPerCoreHistory[i].length > HISTORY_LENGTH) this.cpuPerCoreHistory[i].shift();
+      });
 
       if (gpu) {
         this.gpuHistory.push(gpu.loadPct);

@@ -10,7 +10,7 @@ const cpuBrand = computed(() => store.cpu?.brand || "—");
 </script>
 
 <template>
-  <PanelBox title="Hardware">
+  <PanelBox title="Hardware" expandable>
     <div class="hw-line">
       <span>CPU</span><span class="hw-value">{{ cpuBrand }}</span>
     </div>

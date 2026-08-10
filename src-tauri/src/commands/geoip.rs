@@ -102,9 +102,10 @@ pub fn geoip_lookup(app: AppHandle, ip: String) -> Result<Option<GeoRecord>, Str
 
     let mut record = lookup_city_in_file(&city_mmdb, &ip)?;
 
-    // GeoLite2-City no siempre trae `country` (IPs anycast/de infraestructura, ver
-    // el hallazgo de 1.1.1.1 en plan_migracion.txt) — GeoLite2-Country es una base
-    // separada con mejor cobertura solo para ese dato, se usa como respaldo.
+    // GeoLite2-City no siempre trae `country` (IPs anycast/de infraestructura —
+    // 1.1.1.1 de Cloudflare es un ejemplo real sin datos en ninguna de las dos bases
+    // gratuitas) — GeoLite2-Country es una base separada con mejor cobertura solo para
+    // ese dato, se usa como respaldo.
     let needs_country_fallback = record.as_ref().map(|r| r.country.is_none()).unwrap_or(true);
     if needs_country_fallback {
         if let Some(country_mmdb) = resolve_geoip_resource(&app, "GeoLite2-Country.mmdb") {

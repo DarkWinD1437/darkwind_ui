@@ -53,7 +53,10 @@ function runSearch(direction: "next" | "previous"): void {
 }
 
 function handleKeydown(event: KeyboardEvent): void {
-  if (event.ctrlKey && event.key.toLowerCase() === "f") {
+  // Sin el chequeo de "!shiftKey", Ctrl+Shift+F (atajo del buscador difuso de
+  // archivos) también abría este buscador de scrollback al mismo tiempo, porque
+  // Ctrl+Shift+F cumple igual la condición "ctrlKey && key === 'f'".
+  if (event.ctrlKey && !event.shiftKey && event.key.toLowerCase() === "f") {
     event.preventDefault();
     openSearch();
   } else if (event.key === "Escape" && searchOpen.value) {
@@ -63,11 +66,15 @@ function handleKeydown(event: KeyboardEvent): void {
 
 onMounted(() => {
   if (store.tabs.length === 0) store.openTab();
-  window.addEventListener("keydown", handleKeydown);
+  // captura=true: xterm.js corta la propagación de este evento en fase de burbuja
+  // sobre su <textarea> interno — con la terminal enfocada (el caso más común, ya que
+  // este mismo atajo busca en SU scrollback), un listener en window sin captura nunca
+  // vería a Ctrl+F.
+  window.addEventListener("keydown", handleKeydown, true);
 });
 
 onBeforeUnmount(() => {
-  window.removeEventListener("keydown", handleKeydown);
+  window.removeEventListener("keydown", handleKeydown, true);
 });
 </script>
 

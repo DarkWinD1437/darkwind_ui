@@ -1,3 +1,4 @@
+use super::keyboard::BUNDLED_LAYOUTS;
 use super::settings::{default_shortcuts, Settings};
 use super::theme::BUNDLED_THEMES;
 use std::fs;
@@ -32,6 +33,13 @@ pub fn mirror_defaults_on_first_run(app: &AppHandle) -> Result<(), String> {
     for theme in BUNDLED_THEMES {
         let path = themes_dir.join(format!("{}.json", theme.id));
         fs::write(&path, theme.contents).map_err(|e| e.to_string())?;
+    }
+
+    let keyboards_dir = data_dir.join("keyboards");
+    fs::create_dir_all(&keyboards_dir).map_err(|e| e.to_string())?;
+    for layout in BUNDLED_LAYOUTS {
+        let path = keyboards_dir.join(format!("{}.json", layout.id));
+        fs::write(&path, layout.contents).map_err(|e| e.to_string())?;
     }
 
     Ok(())

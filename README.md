@@ -4,7 +4,7 @@ Terminal de escritorio con estética cyberpunk, construido desde cero con **Vue 
 
 ## Estado del proyecto
 
-🚧 En desarrollo activo. Infraestructura base, terminal y paneles de sistema ya operativos: persistencia de configuración, sistema de temas, animación de arranque, layout principal, una terminal real (PowerShell) multi-pestaña con PTY nativo en Rust, y los paneles laterales de reloj, CPU, RAM, GPU, procesos, red y GeoIP con datos en vivo. Explorador de archivos, teclado táctil y globo 3D aún en construcción.
+🚧 En desarrollo activo. Infraestructura base, terminal, paneles de sistema, explorador de archivos y teclado táctil ya operativos: persistencia de configuración, sistema de temas, animación de arranque, layout principal, una terminal real (PowerShell) multi-pestaña con PTY nativo en Rust, los paneles laterales de reloj, CPU, RAM, GPU, procesos, red y GeoIP con datos en vivo, un explorador de archivos sincronizado con la terminal activa, y un teclado táctil multi-idioma con composición de diacríticos (dead-keys). Editor de configuración, modales genéricos, i18n y globo 3D aún en construcción.
 
 ## Características
 
@@ -17,12 +17,16 @@ Terminal de escritorio con estética cyberpunk, construido desde cero con **Vue 
 - Panel de GPU (uso/VRAM/temperatura), soporte multi-fabricante real (NVIDIA, AMD, Intel) — el original solo reportaba CPU/RAM, nunca GPU
 - Polling de sysinfo centralizado en un store — evita las llamadas redundantes que el original hacía por cada panel por separado
 - Tooltips explicativos en los datos técnicos de los paneles de sistema (Swap, PID, ISP, VRAM, etc.) y tamaños de RAM/VRAM en unidades binarias reales (16 GiB se muestra "16 GB", no "17.2 GB" — la misma convención que usa Windows)
+- Cada panel de sistema (reloj, sistema, hardware, CPU, RAM, GPU, red, tráfico) se puede expandir con un click en su título a un modal más grande con letra más grande — el original no tiene nada parecido
+- Explorador de archivos: navegación sincronizada con el directorio de trabajo real de la pestaña activa (funciona en Windows — el original nunca pudo trackear esto ahí), vista de íconos/lista, toggle de archivos ocultos, vista de unidades de disco, apertura de archivos con la app del sistema
+- Buscador difuso (Ctrl+Shift+F) sobre la carpeta activa del explorador
+- Teclado táctil con 19 layouts de idioma (incluye dead-keys: circunflejo, diéresis, tilde, cedilla, virgulilla, y más), modificadores Shift/Ctrl/Alt/Fn, resaltado de la tecla física que se está tipeando, hover al pasar el mouse, y modo contraseña (Ctrl+Shift+P) que silencia el feedback de audio y visual
 - Temas personalizables (JSON + variables CSS)
+- Tests dirigidos con Vitest (composición de dead-keys, validación de esquemas) además de los tests de Rust
 
 ### Planeado (roadmap)
 
-- Explorador de archivos integrado, sincronizado con la terminal activa (Fase 4)
-- Teclado táctil multi-idioma con dead-keys (Fase 4)
+- Sistema de modales genéricos, editor de Settings/Shortcuts (Fase 5)
 - Interfaz en inglés o español, con detección automática del idioma del sistema (Fase 5)
 - Globo 3D con visualización de conexiones de red activas (Fase 6)
 

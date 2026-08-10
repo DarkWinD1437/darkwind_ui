@@ -11,11 +11,11 @@ pub struct GpuStats {
     pub temperature_c: f32,
 }
 
-// eDEX-UI nunca tuvo estadísticas de GPU (solo CPU/RAM) — capacidad nueva decidida en
-// plan_migracion Sección 6.9, con soporte multi-fabricante real (NVIDIA/AMD/Intel) vía
-// gfxinfo en vez de nvml-wrapper (NVIDIA-only). Sin GPU reconocida o sin driver
-// compatible se devuelve None en vez de error, mismo criterio "best-effort" que ya se
-// usa para la temperatura de CPU (sysinfo.rs).
+// eDEX-UI nunca tuvo estadísticas de GPU (solo CPU/RAM) — capacidad nueva, con soporte
+// multi-fabricante real (NVIDIA/AMD/Intel) vía gfxinfo en vez de nvml-wrapper
+// (NVIDIA-only). Sin GPU reconocida o sin driver compatible se devuelve None en vez de
+// error, mismo criterio "best-effort" que ya se usa para la temperatura de CPU
+// (sysinfo.rs).
 #[tauri::command]
 pub fn sysinfo_gpu() -> Option<GpuStats> {
     let gpu = gfxinfo::active_gpu().ok()?;

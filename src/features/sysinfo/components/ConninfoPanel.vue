@@ -20,7 +20,7 @@ const lastTx = computed(() =>
 </script>
 
 <template>
-  <PanelBox title="Tráfico de red">
+  <PanelBox title="Tráfico de red" expandable>
     <div
       class="conn-row"
       title="Velocidad de descarga (datos que entran a tu PC) de todas tus interfaces de red sumadas"

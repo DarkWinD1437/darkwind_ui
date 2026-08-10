@@ -25,11 +25,15 @@ const localIface = computed(() => {
   return null;
 });
 
-const activeConnections = computed(() => store.netConnections.slice(0, 6));
+// Compacto: 3 líneas para no invadir el espacio del teclado debajo de esta columna.
+// Expandido (modal de PanelBox): la lista completa, sin recorte.
+function visibleConnections(expanded: boolean) {
+  return expanded ? store.netConnections : store.netConnections.slice(0, 3);
+}
 </script>
 
 <template>
-  <PanelBox title="Red">
+  <PanelBox v-slot="{ expanded }" title="Red" expandable>
     <div
       class="net-line"
       title="La IP con la que te ve el resto de internet (no la de tu red local)"
@@ -69,10 +73,10 @@ const activeConnections = computed(() => store.netConnections.slice(0, 6));
       class="net-conn-title"
       title="Conexiones TCP reales con un servidor remoto — no incluye programas solo escuchando localmente"
     >
-      Conexiones activas
+      Conexiones activas{{ expanded ? ` (${store.netConnections.length})` : "" }}
     </div>
     <div
-      v-for="(conn, i) in activeConnections"
+      v-for="(conn, i) in visibleConnections(expanded)"
       :key="i"
       class="net-conn-line"
       :title="`${conn.processName ?? 'proceso desconocido'} conectado a ${conn.remoteAddr}:${conn.remotePort}${conn.remoteOrg ? ` (${conn.remoteOrg})` : ''}`"
@@ -80,11 +84,15 @@ const activeConnections = computed(() => store.netConnections.slice(0, 6));
       <span class="net-conn-main">
         <span class="net-conn-process">{{ conn.processName ?? "?" }}</span>
         → {{ conn.remoteAddr }}:{{ conn.remotePort }}
+        <span v-if="expanded" class="net-conn-local">(local: {{ conn.localPort }})</span>
       </span>
       <span class="net-conn-org">{{ conn.remoteOrg ?? "" }}</span>
     </div>
-    <div v-if="activeConnections.length === 0" class="net-conn-empty">
+    <div v-if="store.netConnections.length === 0" class="net-conn-empty">
       Sin conexiones TCP activas
+    </div>
+    <div v-else-if="!expanded && store.netConnections.length > 3" class="net-conn-more-hint">
+      +{{ store.netConnections.length - 3 }} más — click en el título para ver todas
     </div>
   </PanelBox>
 </template>
@@ -123,6 +131,10 @@ const activeConnections = computed(() => store.netConnections.slice(0, 6));
 .net-conn-process {
   font-weight: bold;
 }
+.net-conn-local {
+  opacity: 0.6;
+  font-size: 0.85em;
+}
 .net-conn-org {
   opacity: 0.6;
   font-size: 0.85em;
@@ -130,7 +142,9 @@ const activeConnections = computed(() => store.netConnections.slice(0, 6));
   white-space: nowrap;
   text-overflow: ellipsis;
 }
-.net-conn-empty {
+.net-conn-empty,
+.net-conn-more-hint {
   opacity: 0.5;
+  font-size: 0.85em;
 }
 </style>

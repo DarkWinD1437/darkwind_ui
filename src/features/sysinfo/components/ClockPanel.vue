@@ -21,7 +21,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <PanelBox title="Reloj">
+  <PanelBox title="Reloj" expandable>
     <div class="clock-time">
       {{ pad(now.getHours()) }}:{{ pad(now.getMinutes()) }}:{{ pad(now.getSeconds()) }}
     </div>

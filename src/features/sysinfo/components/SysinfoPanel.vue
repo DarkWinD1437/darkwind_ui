@@ -25,7 +25,7 @@ const batteryTimeLabel = computed(() => {
 </script>
 
 <template>
-  <PanelBox title="Sistema">
+  <PanelBox title="Sistema" expandable>
     <div class="gauge-row">
       <span class="gauge-label">CPU</span>
       <div class="gauge-track"><div class="gauge-fill" :style="{ width: `${cpuPct}%` }" /></div>
@@ -82,7 +82,12 @@ const batteryTimeLabel = computed(() => {
   margin-bottom: 0.35vh;
 }
 .gauge-label {
-  width: 2.5vh;
+  /* Sin ancho fijo en vh: a la letra más grande del modal expandido de PanelBox
+     (2.2vh vs. 0.85vh normal), un ancho fijo en vh se quedaba corto para "CPU"/"RAM" y
+     el texto se superponía con la barra de al lado. Sin ancho forzado, se ajusta solo
+     al contenido (3 letras, ya de por sí angosto) a cualquier tamaño de letra. */
+  flex-shrink: 0;
+  white-space: nowrap;
   opacity: 0.7;
 }
 .gauge-track {
@@ -97,7 +102,8 @@ const batteryTimeLabel = computed(() => {
   transition: width 0.4s ease-out;
 }
 .gauge-value {
-  width: 3vh;
+  flex-shrink: 0;
+  white-space: nowrap;
   text-align: right;
   opacity: 0.85;
 }

@@ -1,9 +1,11 @@
 mod commands;
 mod state;
 
+use commands::filesystem::{fs_home_dir, fs_list_dir, fs_list_drives};
 use commands::first_run::mirror_defaults_on_first_run;
 use commands::geoip::{geoip_asn_lookup, geoip_lookup};
 use commands::gpu::sysinfo_gpu;
+use commands::keyboard::{keyboard_list, keyboard_read};
 use commands::pty::{pty_kill, pty_resize, pty_spawn, pty_status, pty_write};
 use commands::settings::{settings_read, settings_write, shortcuts_read, shortcuts_write};
 use commands::sysinfo::{
@@ -61,7 +63,12 @@ pub fn run() {
             sysinfo_tcp_ping,
             sysinfo_gpu,
             geoip_lookup,
-            geoip_asn_lookup
+            geoip_asn_lookup,
+            keyboard_list,
+            keyboard_read,
+            fs_list_dir,
+            fs_list_drives,
+            fs_home_dir
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

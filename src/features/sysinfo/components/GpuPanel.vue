@@ -5,15 +5,15 @@ import SparklineChart from "@/shared/components/SparklineChart.vue";
 import { formatMemoryBytes } from "@/shared/utils/formatBytes";
 import { useSysinfoStore } from "../stores/sysinfo.store";
 
-// Capacidad nueva que el original nunca tuvo (solo reportaba CPU/RAM) — ver
-// plan_migracion Sección 6.9. Soporte multi-fabricante (NVIDIA/AMD/Intel) vía gfxinfo.
+// Capacidad nueva que el original nunca tuvo (solo reportaba CPU/RAM). Soporte
+// multi-fabricante (NVIDIA/AMD/Intel) vía el comando sysinfo_gpu (crate gfxinfo).
 const store = useSysinfoStore();
 
 const gpu = computed(() => store.gpu);
 </script>
 
 <template>
-  <PanelBox title="GPU">
+  <PanelBox title="GPU" expandable>
     <template v-if="gpu">
       <div class="gpu-model">{{ gpu.vendor }} — {{ gpu.model }}</div>
       <SparklineChart :values="store.gpuHistory" :max="100" :height="28" />

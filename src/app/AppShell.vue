@@ -12,6 +12,9 @@ import GpuPanel from "@/features/sysinfo/components/GpuPanel.vue";
 import ToplistPanel from "@/features/sysinfo/components/ToplistPanel.vue";
 import NetstatPanel from "@/features/sysinfo/components/NetstatPanel.vue";
 import ConninfoPanel from "@/features/sysinfo/components/ConninfoPanel.vue";
+import FilesystemPanel from "@/features/filesystem/components/FilesystemPanel.vue";
+import KeyboardPanel from "@/features/keyboard/components/KeyboardPanel.vue";
+import FuzzyFinderModal from "@/features/fuzzyFinder/components/FuzzyFinderModal.vue";
 import { useSysinfoStore } from "@/features/sysinfo/stores/sysinfo.store";
 
 const sysinfoStore = useSysinfoStore();
@@ -20,7 +23,6 @@ const shellStage = ref<"collapsed" | "grown" | "hidden" | "shown">("collapsed");
 const titleVisible = ref(false);
 const greeterVisible = ref(false);
 const greeterMounted = ref(true);
-const keyboardStage = ref<"" | "animation_state_1" | "animation_state_1 animation_state_2">("");
 const columnsActivated = ref(false);
 
 function delay(ms: number): Promise<void> {
@@ -48,22 +50,12 @@ async function playReveal(): Promise<void> {
   await delay(270);
 
   greeterVisible.value = true;
-  keyboardStage.value = "animation_state_1";
-  audioManager.keyboard.play();
 
-  await delay(100);
-
-  keyboardStage.value = "animation_state_1 animation_state_2";
-
-  await delay(1000);
+  await delay(1100);
 
   greeterVisible.value = false;
 
-  await delay(100);
-
-  keyboardStage.value = "";
-
-  await delay(400);
+  await delay(500);
 
   greeterMounted.value = false;
 
@@ -141,8 +133,9 @@ onUnmounted(() => {
     <ConninfoPanel />
   </section>
 
-  <section id="filesystem"></section>
-  <section id="keyboard" :class="keyboardStage"></section>
+  <section id="filesystem"><FilesystemPanel /></section>
+  <section id="keyboard"><KeyboardPanel /></section>
+  <FuzzyFinderModal />
 </template>
 
 <style>
@@ -255,7 +248,6 @@ section.mod_column > :deep(div) {
 #main_shell {
   width: 0%;
   height: 0%;
-  margin-bottom: 30vh;
 
   transition:
     width 0.5s cubic-bezier(0.85, 0.5, 0.85, 0.5),

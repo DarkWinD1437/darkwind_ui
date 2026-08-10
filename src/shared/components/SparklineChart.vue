@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import { onMounted, ref, watch } from "vue";
 
-// Decisión de Fase 3 (ver plan_migracion Sección 6.8 / 3.4): en vez de sumar
-// smoothie.js (sin mantenimiento desde ~2017, sin tipos) o uPlot (dependencia nueva)
-// para gráficos de línea simples, se implementa un sparkline propio en Canvas 2D de
-// ~40 líneas — cubre el mismo caso de uso (histórico corto, redibujado por poll) sin
-// deuda de dependencia extra.
+// En vez de sumar smoothie.js (sin mantenimiento desde ~2017, sin tipos) o uPlot
+// (dependencia nueva) para gráficos de línea simples, se implementa un sparkline
+// propio en Canvas 2D de ~40 líneas — cubre el mismo caso de uso (histórico corto,
+// redibujado por poll) sin deuda de dependencia extra.
 const props = withDefaults(defineProps<{ values: number[]; max?: number; height?: number }>(), {
   max: 100,
   height: 36,

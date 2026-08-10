@@ -21,7 +21,7 @@ pub struct CpuInfo {
 // solo expone UN sensor genérico llamado "Computer" ahí (no hay desglose por núcleo
 // como en Linux), y en muchos laptops ni eso está disponible. Se toma el primer
 // componente con lectura, sin pretender que sea específicamente el die de la CPU —
-// mismo criterio "best-effort" documentado en plan_migracion Sección 3.3.
+// se trata como dato "best-effort", puede no estar disponible en todos los equipos.
 fn read_cpu_temperature() -> Option<f32> {
     let components = Components::new_with_refreshed_list();
     components.list().iter().find_map(|c| c.temperature())

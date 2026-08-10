@@ -23,5 +23,15 @@ export default tseslint.config(
       },
     },
   },
+  {
+    // Portado mecánicamente desde el eDEX-UI original (tabla generada de ~2400 reglas
+    // regex, un match de tipo de archivo por línea) — no vale la pena limpiar a mano
+    // miles de líneas de código ya generado por otra herramienta.
+    files: ["src/features/filesystem/fileIconsMatcher.ts"],
+    rules: {
+      "@typescript-eslint/ban-ts-comment": "off",
+      "no-useless-escape": "off",
+    },
+  },
   eslintConfigPrettier,
 );

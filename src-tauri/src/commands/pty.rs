@@ -52,8 +52,17 @@ pub fn pty_spawn(
             match reader.read(&mut buf) {
                 Ok(0) => break,
                 Ok(n) => {
+                    // Un solo envío fallido no significa que el canal esté muerto para
+                    // siempre — puede ser un hueco transitorio justo después del spawn,
+                    // antes de que el puente IPC del lado del frontend termine de
+                    // registrar el canal (más probable cuando el shell escribe su
+                    // banner casi apenas arranca). Cortar acá de forma permanente dejaba
+                    // la terminal en blanco para siempre en esos casos, aunque el shell
+                    // siguiera vivo y el canal se volviera utilizable un instante
+                    // después — solo se corta cuando el PTY realmente termina (Ok(0))
+                    // o falla la lectura misma.
                     if on_data.send(buf[..n].to_vec()).is_err() {
-                        break;
+                        log::warn!("pty_spawn: falló un envío de datos por el canal, se reintenta con el próximo chunk");
                     }
                 }
                 Err(_) => break,

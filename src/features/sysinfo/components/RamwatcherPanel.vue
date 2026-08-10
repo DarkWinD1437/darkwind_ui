@@ -3,9 +3,9 @@ import { onBeforeUnmount, onMounted, ref, watch } from "vue";
 import PanelBox from "@/shared/components/PanelBox.vue";
 import { useSysinfoStore } from "../stores/sysinfo.store";
 
-// Decisión de plan_migracion Sección 6.9 (ítem 3.5 de Fase 3): el grid de 440 celdas
-// del original son <div> DOM reales, con su costo de layout/repintado en cada refresh.
-// Acá se redibuja como un único <canvas>, eliminando ese costo por celda.
+// El grid de 440 celdas del original son <div> DOM reales, con su costo de
+// layout/repintado en cada refresh. Acá se redibuja como un único <canvas>,
+// eliminando ese costo por celda.
 const COLUMNS = 22;
 const ROWS = 20;
 const CELL_COUNT = COLUMNS * ROWS;
@@ -65,12 +65,18 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <PanelBox title="Mapa de RAM">
+  <PanelBox v-slot="{ expanded }" title="Mapa de RAM" expandable>
     <canvas
       ref="canvasRef"
       class="ram-canvas"
+      :class="{ 'ram-canvas-expanded': expanded }"
       title="Cada celda es una porción fija de tu RAM total — las celdas encendidas muestran cuánto está en uso ahora"
     ></canvas>
+    <p v-if="expanded" class="ram-caption">
+      Cada uno de los {{ CELL_COUNT }} cuadros representa una porción fija de tu RAM total. Los
+      cuadros llenos (más brillantes) muestran cuánta está en uso ahora mismo — a medida que usás
+      más memoria, se van "encendiendo" más cuadros de izquierda a derecha, fila por fila.
+    </p>
   </PanelBox>
 </template>
 
@@ -79,5 +85,14 @@ onBeforeUnmount(() => {
   width: 100%;
   height: 8vh;
   display: block;
+}
+.ram-canvas-expanded {
+  height: 26vh;
+}
+.ram-caption {
+  margin: 1vh 0 0;
+  opacity: 0.65;
+  font-size: 0.75em;
+  line-height: 1.4;
 }
 </style>

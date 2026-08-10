@@ -11,7 +11,8 @@ colocarlos acá manualmente antes de compilar (`pnpm tauri dev` o
 - `resources/geoip/GeoLite2-Country.mmdb` — respaldo de país cuando City no
   trae ese dato (algunas IPs de infraestructura/anycast no están
   geolocalizadas a nivel ciudad pero sí a nivel país, o directamente en
-  ninguna de las dos — ver hallazgo sobre 1.1.1.1 en `plan_migracion.txt`).
+  ninguna de las dos — por ejemplo 1.1.1.1 de Cloudflare no tiene datos en
+  ninguna de las dos bases gratuitas).
 
 ## Cómo conseguirlos
 
