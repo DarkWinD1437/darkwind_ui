@@ -7,6 +7,7 @@ import { useTerminalsStore } from "@/features/terminal/stores/terminals.store";
 import { readSettings } from "@/core/persistence/settingsRepository";
 import { audioManager } from "@/core/audio/audioManager";
 import { CTRL_SEQUENCES } from "../deadKeys";
+import { registerShortcutAction } from "@/features/shortcuts/composables/useShortcutActions";
 import type { KeyDef } from "../keyboard.schema";
 
 const ARROW_ICONS: Record<string, string> = {
@@ -187,20 +188,22 @@ onMounted(async () => {
   stage.value = "animation_state_1 animation_state_2";
 });
 
+// El toggle en sí lo dispara la acción KB_PASSMODE de shortcuts.json (Ctrl+Shift+P por
+// defecto), registrada más abajo en el dispatcher genérico — acá solo se evita
+// resaltar la tecla física mientras se mantiene esa combinación (mismo motivo que
+// silenciar el sonido en modo contraseña: no filtrar por UI qué se está escribiendo).
+function isPassModeCombo(event: KeyboardEvent): boolean {
+  return event.ctrlKey && event.shiftKey && event.key.toLowerCase() === "p";
+}
+
 function handleGlobalKeydown(event: KeyboardEvent): void {
-  // Atajo por defecto de shortcuts.json (Ctrl+Shift+P) para el modo contraseña: oculta
-  // el sonido de cada tecla y atenúa el teclado, para no filtrar por audio ni por
-  // vista la longitud de lo que se está escribiendo.
-  if (event.ctrlKey && event.shiftKey && event.key.toLowerCase() === "p") {
-    event.preventDefault();
-    keyboard.togglePasswordMode();
-    return;
-  }
-  // En modo contraseña tampoco se resalta la tecla física presionada — mismo motivo
-  // que silenciar el sonido: no filtrar por UI qué se está escribiendo.
+  if (isPassModeCombo(event)) return;
   if (keyboard.passwordMode.value) return;
   handlePhysicalKeydown(event);
 }
+
+let unregisterPassMode: (() => void) | null = null;
+
 // captura=true: xterm.js corta la propagación de los keydown que maneja en su
 // <textarea> interno (fase de burbuja) — con la terminal enfocada, que es el caso más
 // común de uso real, un listener en window sin captura nunca recibiría el evento. En
@@ -208,10 +211,12 @@ function handleGlobalKeydown(event: KeyboardEvent): void {
 onMounted(() => {
   window.addEventListener("keydown", handleGlobalKeydown, true);
   window.addEventListener("keyup", handlePhysicalKeyup, true);
+  unregisterPassMode = registerShortcutAction("KB_PASSMODE", () => keyboard.togglePasswordMode());
 });
 onBeforeUnmount(() => {
   window.removeEventListener("keydown", handleGlobalKeydown, true);
   window.removeEventListener("keyup", handlePhysicalKeyup, true);
+  unregisterPassMode?.();
 });
 </script>
 

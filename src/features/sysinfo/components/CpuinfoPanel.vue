@@ -1,21 +1,23 @@
 <script setup lang="ts">
 import { computed } from "vue";
+import { useI18n } from "vue-i18n";
 import PanelBox from "@/shared/components/PanelBox.vue";
 import SparklineChart from "@/shared/components/SparklineChart.vue";
 import { useSysinfoStore } from "../stores/sysinfo.store";
 
+const { t } = useI18n();
 const store = useSysinfoStore();
 
 const perCore = computed(() => store.cpu?.perCore ?? []);
 </script>
 
 <template>
-  <PanelBox v-slot="{ expanded }" title="CPU por núcleo" expandable>
+  <PanelBox v-slot="{ expanded }" :title="t('panels.cpu.title')" expandable>
     <SparklineChart
       :values="store.cpuHistory"
       :max="100"
       :height="expanded ? 60 : 32"
-      :title="`Promedio de todos los núcleos — últimos ${store.cpuHistory.length} muestreos`"
+      :title="t('panels.cpu.averageTooltip', { count: store.cpuHistory.length })"
     />
 
     <!-- Compacto: grilla angosta de barras, valor exacto solo al pasar el mouse. -->
@@ -24,7 +26,7 @@ const perCore = computed(() => store.cpu?.perCore ?? []);
         v-for="(usage, index) in perCore"
         :key="index"
         class="core-cell"
-        :title="`Núcleo ${index}: ${Math.round(usage)}%`"
+        :title="t('panels.cpu.coreTooltip', { index, usage: Math.round(usage) })"
       >
         <div class="core-fill" :style="{ height: `${Math.max(2, Math.round(usage))}%` }" />
       </div>
@@ -34,7 +36,7 @@ const perCore = computed(() => store.cpu?.perCore ?? []);
          (no solo al pasar el mouse), en vez de la misma grilla compacta más grande. -->
     <div v-else class="core-list">
       <div v-for="(usage, index) in perCore" :key="index" class="core-row">
-        <span class="core-row-label">Núcleo {{ index }}</span>
+        <span class="core-row-label">{{ t("panels.cpu.core", { index }) }}</span>
         <SparklineChart
           :values="store.cpuPerCoreHistory[index] ?? []"
           :max="100"
@@ -45,19 +47,15 @@ const perCore = computed(() => store.cpu?.perCore ?? []);
       </div>
     </div>
 
-    <div
-      v-if="store.cpu"
-      class="cpu-line"
-      title="Velocidad de reloj promedio actual de los núcleos, en megahercios"
-    >
-      <span>Frecuencia</span><span>{{ store.cpu.frequencyMhz }} MHz</span>
+    <div v-if="store.cpu" class="cpu-line" :title="t('panels.cpu.frequencyTooltip')">
+      <span>{{ t("panels.cpu.frequency") }}</span><span>{{ store.cpu.frequencyMhz }} MHz</span>
     </div>
     <div
       v-if="store.cpu?.temperatureC != null"
       class="cpu-line"
-      title="Sensor de temperatura general del sistema (Windows no siempre expone un sensor específico por CPU)"
+      :title="t('panels.cpu.temperatureTooltip')"
     >
-      <span>Temp.</span><span>{{ store.cpu.temperatureC.toFixed(0) }}°C</span>
+      <span>{{ t("panels.cpu.temperature") }}</span><span>{{ store.cpu.temperatureC.toFixed(0) }}°C</span>
     </div>
   </PanelBox>
 </template>

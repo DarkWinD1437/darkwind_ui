@@ -67,27 +67,32 @@ const emit = defineEmits<{ activate: [] }>();
 
 .file-entry.list-view {
   flex-direction: row;
+  align-items: center;
   justify-content: flex-start;
-  gap: 0.6vh;
-  padding: 0.15vh 0.4vh;
+  gap: 0.8vh;
+  padding: 0.5vh 0.6vh;
 }
 .file-entry.list-view .file-entry-icon {
-  width: 1.8vh;
-  height: 1.8vh;
+  width: 2.4vh;
+  height: 2.4vh;
 }
 .file-entry.list-view .file-entry-name {
   text-align: left;
   flex: 1;
+  /* En grilla el nombre queda debajo del ícono grande, así que 0.85vh se lee bien; en
+     lista es la única referencia visual de tamaño en una fila angosta y se sentía
+     "ultra chico" — se agranda para que sea cómodo de leer en una sola línea. */
+  font-size: 1.05vh;
 }
 .file-entry.list-view .file-entry-size {
   width: 15%;
-  font-size: 0.8vh;
+  font-size: 0.95vh;
   opacity: 0.6;
   text-align: right;
 }
 .file-entry.list-view .file-entry-date {
   width: 30%;
-  font-size: 0.8vh;
+  font-size: 0.95vh;
   opacity: 0.6;
   text-align: right;
 }

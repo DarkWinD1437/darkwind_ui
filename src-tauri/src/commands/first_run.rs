@@ -15,8 +15,12 @@ pub fn mirror_defaults_on_first_run(app: &AppHandle) -> Result<(), String> {
 
     let settings_path = config_dir.join("settings.json");
     if !settings_path.exists() {
-        let mut settings = Settings::default();
-        settings.cwd = config_dir.to_string_lossy().into_owned();
+        // Antes se pisaba acá con `config_dir` (la carpeta de settings.json/temas/etc.)
+        // — la terminal terminaba arrancando en una carpeta de configuración interna
+        // de la app en vez de un lugar útil. `Settings::default()` ya trae `cwd`
+        // apuntando a C:\ (Sección settings.rs::default_cwd), sin necesidad de
+        // pisarlo acá.
+        let settings = Settings::default();
         let raw = serde_json::to_string_pretty(&settings).map_err(|e| e.to_string())?;
         fs::write(&settings_path, raw).map_err(|e| e.to_string())?;
     }

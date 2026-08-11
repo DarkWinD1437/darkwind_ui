@@ -20,6 +20,7 @@
     "@tauri-apps/plugin-dialog": "^2.7.2",
     "@tauri-apps/plugin-log": "^2.9.0",
     "@tauri-apps/plugin-opener": "^2",
+    "@tauri-apps/plugin-os": "^2.3.2",
     "@tauri-apps/plugin-window-state": "^2.4.1",
     "@xterm/addon-fit": "^0.11.0",
     "@xterm/addon-search": "^0.16.0",
@@ -28,9 +29,11 @@
     "augmented-ui": "^2.0.0",
     "color": "^5.0.3",
     "howler": "^2.2.4",
+    "pdfjs-dist": "^6.2.108",
     "pinia": "^4.0.2",
     "pretty-bytes": "^7.1.1",
     "vue": "^3.5.13",
+    "vue-i18n": "^11.4.8",
     "zod": "^4.4.3"
   },
   "devDependencies": {

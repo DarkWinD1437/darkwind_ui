@@ -1,31 +1,33 @@
 <script setup lang="ts">
 import { computed } from "vue";
+import { useI18n } from "vue-i18n";
 import PanelBox from "@/shared/components/PanelBox.vue";
 import { formatMemoryBytes } from "@/shared/utils/formatBytes";
 import { useSysinfoStore } from "../stores/sysinfo.store";
 
+const { t } = useI18n();
 const store = useSysinfoStore();
 
 const topFive = computed(() => store.processes.slice(0, 5));
 </script>
 
 <template>
-  <PanelBox v-slot="{ expanded }" title="Procesos" expandable>
+  <PanelBox v-slot="{ expanded }" :title="t('panels.toplist.title')" expandable>
     <template v-if="expanded">
       <table class="proc-table">
         <thead>
           <tr>
-            <th title="Identificador único que Windows le asigna a cada proceso">PID</th>
-            <th>Nombre</th>
+            <th :title="t('panels.toplist.pidTooltip')">PID</th>
+            <th>{{ t("panels.toplist.name") }}</th>
             <th>CPU</th>
-            <th>Memoria</th>
+            <th>{{ t("panels.toplist.memory") }}</th>
           </tr>
         </thead>
         <tbody>
           <tr
             v-for="proc in store.processes"
             :key="proc.pid"
-            :title="proc.cmd || 'Sin línea de comandos disponible'"
+            :title="proc.cmd || t('panels.toplist.noCmdline')"
           >
             <td>{{ proc.pid }}</td>
             <td>

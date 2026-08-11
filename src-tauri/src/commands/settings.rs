@@ -38,6 +38,19 @@ fn default_port() -> u16 {
     3000
 }
 
+fn default_language() -> String {
+    "auto".into()
+}
+
+// La terminal arrancaba sin cwd propio (string vacío) hasta esta ronda, así que
+// heredaba el directorio de trabajo del propio proceso de la app — en la práctica,
+// la carpeta donde vive el .exe, no un lugar útil para el usuario. C:\ es un punto de
+// partida neutral y siempre existente en Windows; el usuario puede cambiarlo desde
+// SettingsModal si prefiere otra carpeta.
+fn default_cwd() -> String {
+    "C:\\".into()
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Settings {
@@ -45,12 +58,17 @@ pub struct Settings {
     pub shell: String,
     #[serde(default)]
     pub shell_args: String,
-    #[serde(default)]
+    #[serde(default = "default_cwd")]
     pub cwd: String,
     #[serde(default = "default_keyboard")]
     pub keyboard: String,
     #[serde(default = "default_theme")]
     pub theme: String,
+    // "auto" = detectar desde el idioma del sistema operativo al arrancar (frontend,
+    // vía @tauri-apps/plugin-os); cualquier otro valor ("en"/"es") es un override
+    // manual explícito elegido en SettingsModal, que ya no se vuelve a autodetectar.
+    #[serde(default = "default_language")]
+    pub language: String,
     #[serde(default = "default_term_font_size")]
     pub term_font_size: u32,
     #[serde(default = "default_true")]
@@ -90,9 +108,10 @@ impl Default for Settings {
         Settings {
             shell: default_shell(),
             shell_args: String::new(),
-            cwd: String::new(),
+            cwd: default_cwd(),
             keyboard: default_keyboard(),
             theme: default_theme(),
+            language: default_language(),
             term_font_size: default_term_font_size(),
             audio: true,
             audio_volume: default_audio_volume(),
@@ -194,4 +213,43 @@ pub fn shortcuts_write(app: AppHandle, shortcuts: Vec<Shortcut>) -> Result<(), S
     let path = shortcuts_path(&app)?;
     let raw = serde_json::to_string_pretty(&shortcuts).map_err(|e| e.to_string())?;
     fs::write(&path, raw).map_err(|e| e.to_string())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    // Un settings.json escrito por una instalación de antes de la Fase 5 no tiene el
+    // campo "language" — sin el #[serde(default = "default_language")] esto rompería
+    // la deserialización en el primer arranque post-actualización en vez de migrar
+    // silenciosamente, igual que ya pasa con cada campo agregado en fases anteriores.
+    #[test]
+    fn settings_without_language_field_defaults_to_auto() {
+        let old_json = r#"{
+            "shell": "powershell.exe", "shellArgs": "", "cwd": "", "keyboard": "en-US",
+            "theme": "tron", "termFontSize": 15, "audio": true, "audioVolume": 1.0,
+            "disableFeedbackAudio": false, "clockHours": 24, "pingAddr": "1.1.1.1",
+            "port": 3000, "nointro": false, "nocursor": false, "forceFullscreen": true,
+            "allowWindowed": false, "excludeThreadsFromToplist": true,
+            "hideDotfiles": false, "fsListView": false,
+            "experimentalGlobeFeatures": false, "experimentalFeatures": false
+        }"#;
+        let settings: Settings = serde_json::from_str(old_json).expect("debe deserializar");
+        assert_eq!(settings.language, "auto");
+    }
+
+    // La terminal arrancaba en la carpeta del propio proceso de la app cuando cwd
+    // venía vacío ("" es un valor válido de String, no dispara el default de serde) —
+    // Settings::default() ahora debe traer un valor útil de fábrica.
+    #[test]
+    fn default_settings_cwd_points_to_c_drive() {
+        assert_eq!(Settings::default().cwd, "C:\\");
+    }
+
+    #[test]
+    fn default_shortcuts_has_settings_and_shortcuts_actions() {
+        let shortcuts = default_shortcuts();
+        assert!(shortcuts.iter().any(|s| s.action == "SETTINGS" && s.trigger == "Ctrl+Shift+S"));
+        assert!(shortcuts.iter().any(|s| s.action == "SHORTCUTS" && s.trigger == "Ctrl+Shift+K"));
+    }
 }

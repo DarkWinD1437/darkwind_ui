@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { computed } from "vue";
+import { useI18n } from "vue-i18n";
 import PanelBox from "@/shared/components/PanelBox.vue";
 import SparklineChart from "@/shared/components/SparklineChart.vue";
 import { formatBytesPerSec } from "@/shared/utils/formatBytes";
 import { useSysinfoStore } from "../stores/sysinfo.store";
 
+const { t } = useI18n();
 const store = useSysinfoStore();
 
 const rxHistory = computed(() => store.netHistory.map((s) => s.rx));
@@ -20,18 +22,12 @@ const lastTx = computed(() =>
 </script>
 
 <template>
-  <PanelBox title="Tráfico de red" expandable>
-    <div
-      class="conn-row"
-      title="Velocidad de descarga (datos que entran a tu PC) de todas tus interfaces de red sumadas"
-    >
+  <PanelBox :title="t('panels.conninfo.title')" expandable>
+    <div class="conn-row" :title="t('panels.conninfo.downloadTooltip')">
       <span>↓ {{ formatBytesPerSec(lastRx) }}</span>
     </div>
     <SparklineChart :values="rxHistory" :max="rxMax" :height="24" />
-    <div
-      class="conn-row"
-      title="Velocidad de subida (datos que salen de tu PC) de todas tus interfaces de red sumadas"
-    >
+    <div class="conn-row" :title="t('panels.conninfo.uploadTooltip')">
       <span>↑ {{ formatBytesPerSec(lastTx) }}</span>
     </div>
     <SparklineChart :values="txHistory" :max="txMax" :height="24" />

@@ -1,0 +1,180 @@
+{
+  "common": {
+    "close": "Cerrar",
+    "cancel": "Cancelar",
+    "save": "Guardar",
+    "confirm": "Confirmar",
+    "delete": "Eliminar",
+    "add": "Agregar",
+    "enabled": "Habilitado",
+    "disabled": "Deshabilitado",
+    "accept": "Aceptar"
+  },
+  "appShell": {
+    "panelSystem1": "PANEL",
+    "panelSystem2": "SISTEMA",
+    "panelNetwork1": "PANEL",
+    "panelNetwork2": "RED",
+    "terminal1": "TERMINAL",
+    "terminal2": "CONSOLA PRINCIPAL",
+    "welcomeBack": "Bienvenido de nuevo",
+    "openSettings": "Abrir configuración (Ctrl+Shift+S)",
+    "openShortcuts": "Abrir atajos de teclado (Ctrl+Shift+K)"
+  },
+  "settings": {
+    "title": "Configuración",
+    "appearance": "Apariencia",
+    "theme": "Tema",
+    "keyboardLayout": "Diseño de teclado",
+    "language": "Idioma",
+    "languageAuto": "Automático (según el sistema)",
+    "termFontSize": "Tamaño de letra de la terminal",
+    "clockHours": "Formato de reloj",
+    "audio": "Audio",
+    "audioEnabled": "Audio habilitado",
+    "audioVolume": "Volumen",
+    "disableFeedbackAudio": "Silenciar sonidos de feedback (tecleo, navegación)",
+    "terminalNetwork": "Terminal y red",
+    "shell": "Shell",
+    "shellArgs": "Argumentos del shell",
+    "cwd": "Carpeta inicial de la terminal",
+    "pingAddr": "Dirección de ping",
+    "behavior": "Comportamiento",
+    "forceFullscreen": "Forzar pantalla completa",
+    "allowWindowed": "Permitir modo ventana",
+    "nointro": "Saltar animación de inicio",
+    "nocursor": "Ocultar cursor del mouse",
+    "excludeThreads": "Excluir threads del listado de procesos",
+    "hideDotfiles": "Ocultar archivos ocultos por defecto",
+    "fsListView": "Vista de lista por defecto en el explorador",
+    "experimental": "Experimental",
+    "experimentalGlobe": "Funciones experimentales del globo 3D",
+    "experimentalGeneral": "Funciones experimentales generales"
+  },
+  "shortcuts": {
+    "title": "Atajos de teclado",
+    "trigger": "Combinación",
+    "action": "Acción / comando",
+    "type": "Tipo",
+    "recording": "Presioná una tecla…",
+    "clickToRecord": "Click para grabar",
+    "actionPlaceholder": "Nombre de acción o comando",
+    "hint": "Click en una combinación para reasignarla (Escape cancela). Las acciones de tipo \"app\" disparan una función interna (algunas todavía no tienen una función real asociada); las de tipo \"shell\" envían el texto como comando a la pestaña de terminal activa.",
+    "deleteTitle": "Eliminar atajo",
+    "deleteMessage": "¿Eliminar el atajo \"{trigger}\"? Esta acción no se puede deshacer."
+  },
+  "docReader": {
+    "title": "Visor de PDF",
+    "loading": "Cargando documento…",
+    "error": "No se pudo abrir este PDF"
+  },
+  "mediaPlayer": {
+    "hint": "Reproducción local — el archivo se sirve directo desde el disco, sin cargarlo completo en memoria.",
+    "fullscreen": "Pantalla completa"
+  },
+  "labels": {
+    "batteryCharging": "Cargando",
+    "batteryDischarging": "Descargando",
+    "batteryFull": "Completa",
+    "batteryEmpty": "Vacía",
+    "batteryUnknown": "Desconocido",
+    "tcpEstablished": "Establecida"
+  },
+  "panels": {
+    "clock": { "title": "Reloj" },
+    "sysinfo": {
+      "title": "Sistema",
+      "timeToFull": "{time} para cargar",
+      "timeRemaining": "{time} restante",
+      "uptime": "Uptime",
+      "uptimeTooltip": "Tiempo que la PC lleva encendida sin reiniciar",
+      "memory": "Memoria",
+      "memoryTooltip": "{used} usados de {total}",
+      "swap": "Swap",
+      "swapTooltip": "Memoria virtual en disco que Windows usa cuando la RAM se llena — más lenta que la RAM real",
+      "battery": "Batería"
+    },
+    "hardware": {
+      "title": "Hardware",
+      "cores": "Núcleos",
+      "coresTooltip": "Físicos: chips de cálculo reales. Lógicos: incluye los núcleos virtuales de Hyper-Threading/SMT",
+      "coresValue": "{physical} físicos / {logical} lógicos",
+      "totalRam": "RAM total",
+      "host": "Host",
+      "os": "SO",
+      "disks": "Discos"
+    },
+    "ram": {
+      "title": "Mapa de RAM",
+      "canvasTooltip": "Cada celda es una porción fija de tu RAM total — las celdas encendidas muestran cuánto está en uso ahora",
+      "caption": "Cada uno de los {count} cuadros representa una porción fija de tu RAM total. Los cuadros llenos (más brillantes) muestran cuánta está en uso ahora mismo — a medida que usás más memoria, se van \"encendiendo\" más cuadros de izquierda a derecha, fila por fila."
+    },
+    "cpu": {
+      "title": "CPU por núcleo",
+      "averageTooltip": "Promedio de todos los núcleos — últimos {count} muestreos",
+      "coreTooltip": "Núcleo {index}: {usage}%",
+      "core": "Núcleo {index}",
+      "frequency": "Frecuencia",
+      "frequencyTooltip": "Velocidad de reloj promedio actual de los núcleos, en megahercios",
+      "temperature": "Temp.",
+      "temperatureTooltip": "Sensor de temperatura general del sistema (Windows no siempre expone un sensor específico por CPU)"
+    },
+    "gpu": {
+      "load": "Carga",
+      "loadTooltip": "Carga de la GPU — últimos {count} muestreos",
+      "temperature": "Temp.",
+      "sensorUnavailable": "sensor no disponible",
+      "temperatureTooltip": "Temperatura de la GPU — últimos {count} muestreos",
+      "vramTooltip": "Memoria dedicada de la GPU — separada de la RAM del sistema",
+      "vramUsedTooltip": "{used} usados de {total}",
+      "vramOf": "VRAM — {used} de {total}",
+      "vramFree": "VRAM libre",
+      "loadStats": "Carga — promedio / pico",
+      "loadStatsTooltip": "Calculado sobre el historial visible en el gráfico de carga",
+      "tempStats": "Temp. — promedio / pico",
+      "tempStatsTooltip": "Calculado sobre el historial visible en el gráfico de temperatura",
+      "notDetected": "GPU no detectada"
+    },
+    "toplist": {
+      "title": "Procesos",
+      "pidTooltip": "Identificador único que Windows le asigna a cada proceso",
+      "name": "Nombre",
+      "memory": "Memoria",
+      "noCmdline": "Sin línea de comandos disponible"
+    },
+    "netstat": {
+      "title": "Red",
+      "notAvailable": "N/D",
+      "externalIp": "IP externa",
+      "externalIpTooltip": "La IP con la que te ve el resto de internet (no la de tu red local)",
+      "location": "Ubicación",
+      "locationTooltip": "Ubicación aproximada asociada a tu IP externa, no tu ubicación exacta",
+      "ispTooltip": "Proveedor de Internet (organización dueña de tu IP externa)",
+      "localIp": "IP local",
+      "localIpTooltip": "Tu IP dentro de la red local (WiFi/Ethernet), la que usan otros dispositivos de tu casa/oficina para verte",
+      "pingTooltip": "Tiempo de ida y vuelta de un paquete de red, en milisegundos — más bajo es mejor",
+      "connectionsTooltip": "Conexiones TCP reales con un servidor remoto — no incluye programas solo escuchando localmente",
+      "activeConnections": "Conexiones activas",
+      "connectionTooltip": "{process} conectado a {addr}:{port}{org}",
+      "unknownProcess": "proceso desconocido",
+      "local": "local",
+      "noConnections": "Sin conexiones TCP activas",
+      "moreHint": "+{count} más — click en el título para ver todas"
+    },
+    "conninfo": {
+      "title": "Tráfico de red",
+      "downloadTooltip": "Velocidad de descarga (datos que entran a tu PC) de todas tus interfaces de red sumadas",
+      "uploadTooltip": "Velocidad de subida (datos que salen de tu PC) de todas tus interfaces de red sumadas"
+    },
+    "filesystem": {
+      "goUp": "Subir a la carpeta contenedora",
+      "drives": "Unidades",
+      "showDrives": "Ver todas las unidades de disco",
+      "toggleView": "Alternar entre vista de íconos y vista de lista",
+      "toggleDotfiles": "Mostrar u ocultar archivos que empiezan con un punto (ocultos por convención en Unix)",
+      "driveFree": "{free} libres de {total}",
+      "readError": "No se pudo leer esta carpeta",
+      "empty": "Carpeta vacía"
+    }
+  }
+}

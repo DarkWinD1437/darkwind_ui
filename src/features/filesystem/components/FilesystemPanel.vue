@@ -1,19 +1,26 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, watch } from "vue";
-import { invoke } from "@tauri-apps/api/core";
+import { computed, onBeforeUnmount, onMounted } from "vue";
+import { useI18n } from "vue-i18n";
 import { openPath } from "@tauri-apps/plugin-opener";
 import FileEntry from "./FileEntry.vue";
 import { useFilesystemStore } from "../stores/filesystem.store";
-import { useTerminalsStore } from "@/features/terminal/stores/terminals.store";
 import { matchIcon } from "../fileIconsMatcher";
-import { resolveMatchedIcon, specialIcon } from "../icons";
+import { fileOpenKind, resolveMatchedIcon, specialIcon } from "../icons";
 import { formatBytes } from "@/shared/utils/formatBytes";
 import { readSettings, writeSettings } from "@/core/persistence/settingsRepository";
 import { audioManager } from "@/core/audio/audioManager";
+import { useDocReaderStore } from "@/features/docReader/stores/docReader.store";
+import { useMediaPlayerStore } from "@/features/mediaPlayer/stores/mediaPlayer.store";
+import {
+  dispatchShortcutAction,
+  registerShortcutAction,
+} from "@/features/shortcuts/composables/useShortcutActions";
 import type { FsEntry } from "../filesystemClient";
 
+const { t } = useI18n();
 const store = useFilesystemStore();
-const terminalsStore = useTerminalsStore();
+const docReaderStore = useDocReaderStore();
+const mediaPlayerStore = useMediaPlayerStore();
 
 function iconFor(entry: FsEntry) {
   if (entry.isSymlink) return specialIcon("symlink");
@@ -30,20 +37,31 @@ function sizeLabel(entry: FsEntry): string {
   return entry.isDir ? "" : formatBytes(entry.size);
 }
 
-function writeToActiveTerminal(data: string): void {
-  const ptyId = terminalsStore.activeTab?.ptyId;
-  if (ptyId) void invoke("pty_write", { id: ptyId, data });
-}
-
-async function enterDir(path: string, dirName: string): Promise<void> {
+// Antes esta función también escribía "cd <carpeta>" en la terminal real al navegar
+// por el panel (y, en la otra dirección, un watch() acá reflejaba el cwd de la
+// terminal en el panel). Ambos sentidos se sacaron a pedido del usuario: el panel y
+// la terminal ahora navegan de forma completamente independiente, sin ensuciar la
+// terminal con comandos que parecían tipeados solos ni saltar el panel de golpe.
+async function enterDir(path: string): Promise<void> {
   audioManager.folder.play();
   await store.readFS(path);
-  writeToActiveTerminal(`cd "${dirName}"\r\n`);
 }
 
 async function activateEntry(entry: FsEntry): Promise<void> {
   if (entry.isDir) {
-    await enterDir(entry.path, entry.name);
+    await enterDir(entry.path);
+    return;
+  }
+  // PDF/audio/video abren en un modal propio en vez de siempre delegar a la app del
+  // sistema operativo (el único comportamiento que tenía el original) — todo lo demás
+  // sigue cayendo a openPath() igual que antes.
+  const kind = fileOpenKind(matchIcon(entry.name));
+  if (kind === "pdf") {
+    docReaderStore.open(entry.path);
+    return;
+  }
+  if (kind === "audio" || kind === "video") {
+    mediaPlayerStore.open(entry.path, kind);
     return;
   }
   await openPath(entry.path).catch(() => {});
@@ -53,13 +71,11 @@ async function goUp(): Promise<void> {
   if (!store.parent) return;
   audioManager.folder.play();
   await store.readFS(store.parent);
-  writeToActiveTerminal("cd ..\r\n");
 }
 
 async function activateDrive(mountPoint: string): Promise<void> {
   audioManager.folder.play();
   await store.readFS(mountPoint);
-  writeToActiveTerminal(`cd "${mountPoint}"\r\n`);
 }
 
 async function onToggleListView(): Promise<void> {
@@ -89,35 +105,19 @@ onMounted(async () => {
   await store.initAtHome();
 });
 
-// Sincronización con la terminal activa: a diferencia del original (que en Windows
-// nunca pudo trackear el cwd real del shell y quedaba siempre en modo "detached"), acá
-// sysinfo::Process::cwd() sí funciona en Windows — cuando cambia el cwd reportado por
-// la pestaña activa, el panel se re-sincroniza automáticamente.
-watch(
-  () => terminalsStore.activeTab?.cwd,
-  (cwd) => {
-    if (cwd && cwd !== store.path && !store.showingDrives) void store.readFS(cwd);
-  },
-);
-
-// Atajos por defecto de shortcuts.json (Ctrl+Shift+L / Ctrl+Shift+H) — mismo patrón
-// de listener local ya usado en TerminalPanel para su propio buscador (Ctrl+F), en vez
-// de depender del dispatcher genérico de atajos (todavía no existe como feature).
-function handleGlobalKeydown(event: KeyboardEvent): void {
-  if (!event.ctrlKey || !event.shiftKey) return;
-  if (event.key.toLowerCase() === "l") {
-    event.preventDefault();
-    void onToggleListView();
-  } else if (event.key.toLowerCase() === "h") {
-    event.preventDefault();
-    void onToggleDotfiles();
-  }
-}
-
-// captura=true: con la terminal enfocada, xterm.js corta la propagación del keydown
-// en fase de burbuja antes de que llegue a window — este atajo debe verse desde antes.
-onMounted(() => window.addEventListener("keydown", handleGlobalKeydown, true));
-onBeforeUnmount(() => window.removeEventListener("keydown", handleGlobalKeydown, true));
+// Acciones FS_LIST_VIEW/FS_DOTFILES de shortcuts.json (Ctrl+Shift+L/H por defecto) —
+// registradas en el dispatcher genérico de useGlobalShortcuts.ts en vez de un listener
+// propio fijo, para que reasignarlas o deshabilitarlas en ShortcutsModal surta efecto real.
+let unregisterListView: (() => void) | null = null;
+let unregisterDotfiles: (() => void) | null = null;
+onMounted(() => {
+  unregisterListView = registerShortcutAction("FS_LIST_VIEW", () => void onToggleListView());
+  unregisterDotfiles = registerShortcutAction("FS_DOTFILES", () => void onToggleDotfiles());
+});
+onBeforeUnmount(() => {
+  unregisterListView?.();
+  unregisterDotfiles?.();
+});
 </script>
 
 <template>
@@ -126,21 +126,21 @@ onBeforeUnmount(() => window.removeEventListener("keydown", handleGlobalKeydown,
       <button
         type="button"
         :disabled="!store.parent || store.showingDrives"
-        title="Subir a la carpeta contenedora"
+        :title="t('panels.filesystem.goUp')"
         @click="goUp"
       >
         ↑
       </button>
       <span class="fs-path" :title="store.path">{{
-        store.showingDrives ? "Unidades" : shortPath
+        store.showingDrives ? t("panels.filesystem.drives") : shortPath
       }}</span>
-      <button type="button" title="Ver todas las unidades de disco" @click="store.showDrives">
+      <button type="button" :title="t('panels.filesystem.showDrives')" @click="store.showDrives">
         💾
       </button>
       <button
         type="button"
         :class="{ 'fs-toggle-active': store.listView }"
-        title="Alternar entre vista de íconos y vista de lista"
+        :title="t('panels.filesystem.toggleView')"
         @click="onToggleListView"
       >
         ☰
@@ -148,10 +148,25 @@ onBeforeUnmount(() => window.removeEventListener("keydown", handleGlobalKeydown,
       <button
         type="button"
         :class="{ 'fs-toggle-active': store.hideDotfiles }"
-        title="Mostrar u ocultar archivos que empiezan con un punto (ocultos por convención en Unix)"
+        :title="t('panels.filesystem.toggleDotfiles')"
         @click="onToggleDotfiles"
       >
         •
+      </button>
+      <span class="fs-toolbar-spacer"></span>
+      <button
+        type="button"
+        :title="t('appShell.openSettings')"
+        @click="dispatchShortcutAction('SETTINGS')"
+      >
+        ⚙
+      </button>
+      <button
+        type="button"
+        :title="t('appShell.openShortcuts')"
+        @click="dispatchShortcutAction('SHORTCUTS')"
+      >
+        ⌨
       </button>
     </div>
 
@@ -163,7 +178,7 @@ onBeforeUnmount(() => window.removeEventListener("keydown", handleGlobalKeydown,
           :name="drive.name"
           :icon="specialIcon(drive.isRemovable ? 'usb' : 'disk')"
           :list-view="store.listView"
-          :title="`${formatBytes(drive.available)} libres de ${formatBytes(drive.total)}`"
+          :title="t('panels.filesystem.driveFree', { free: formatBytes(drive.available), total: formatBytes(drive.total) })"
           @activate="activateDrive(drive.mountPoint)"
         />
       </template>
@@ -179,9 +194,9 @@ onBeforeUnmount(() => window.removeEventListener("keydown", handleGlobalKeydown,
           :date-label="dateLabel(entry)"
           @activate="activateEntry(entry)"
         />
-        <div v-if="store.failed" class="fs-empty">No se pudo leer esta carpeta</div>
+        <div v-if="store.failed" class="fs-empty">{{ t("panels.filesystem.readError") }}</div>
         <div v-else-if="store.visibleEntries.length === 0 && !store.loading" class="fs-empty">
-          Carpeta vacía
+          {{ t("panels.filesystem.empty") }}
         </div>
       </template>
     </div>
@@ -222,6 +237,9 @@ onBeforeUnmount(() => window.removeEventListener("keydown", handleGlobalKeydown,
   background: rgb(var(--color_r), var(--color_g), var(--color_b));
   color: var(--color_black);
 }
+.fs-toolbar-spacer {
+  flex: 1;
+}
 .fs-path {
   flex: 1;
   font-size: 0.95vh;
@@ -245,7 +263,22 @@ onBeforeUnmount(() => window.removeEventListener("keydown", handleGlobalKeydown,
 .fs-body.list-view {
   display: flex;
   flex-direction: column;
-  gap: 0.1vh;
+  gap: 0.2vh;
+}
+/* Scrollbar propia con los colores del tema — sin esto se veía la barra gris nativa
+   de Windows/Chromium, la única del panel que no seguía el tema (mismo tratamiento
+   que ya usan PanelBox/BaseModal). */
+.fs-body::-webkit-scrollbar {
+  width: 0.7vh;
+}
+.fs-body::-webkit-scrollbar-track {
+  background: rgba(var(--color_r), var(--color_g), var(--color_b), 0.08);
+}
+.fs-body::-webkit-scrollbar-thumb {
+  background: rgba(var(--color_r), var(--color_g), var(--color_b), 0.4);
+}
+.fs-body::-webkit-scrollbar-thumb:hover {
+  background: rgba(var(--color_r), var(--color_g), var(--color_b), 0.65);
 }
 
 .fs-empty {

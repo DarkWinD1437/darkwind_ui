@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import { computed } from "vue";
+import { useI18n } from "vue-i18n";
 import PanelBox from "@/shared/components/PanelBox.vue";
 import { useSysinfoStore } from "../stores/sysinfo.store";
 
+const { t } = useI18n();
 const store = useSysinfoStore();
 
 const location = computed(() => {
   const geo = store.externalIpGeo;
-  if (!geo || (!geo.city && !geo.country)) return "N/D";
+  if (!geo || (!geo.city && !geo.country)) return t("panels.netstat.notAvailable");
   return [geo.city, geo.country].filter(Boolean).join(", ");
 });
 
@@ -33,66 +35,53 @@ function visibleConnections(expanded: boolean) {
 </script>
 
 <template>
-  <PanelBox v-slot="{ expanded }" title="Red" expandable>
-    <div
-      class="net-line"
-      title="La IP con la que te ve el resto de internet (no la de tu red local)"
-    >
-      <span>IP externa</span><span>{{ store.externalIp ?? "…" }}</span>
+  <PanelBox v-slot="{ expanded }" :title="t('panels.netstat.title')" expandable>
+    <div class="net-line" :title="t('panels.netstat.externalIpTooltip')">
+      <span>{{ t("panels.netstat.externalIp") }}</span><span>{{ store.externalIp ?? "…" }}</span>
     </div>
-    <div
-      class="net-line"
-      title="Ubicación aproximada asociada a tu IP externa, no tu ubicación exacta"
-    >
-      <span>Ubicación</span><span>{{ location }}</span>
+    <div class="net-line" :title="t('panels.netstat.locationTooltip')">
+      <span>{{ t("panels.netstat.location") }}</span><span>{{ location }}</span>
     </div>
-    <div
-      v-if="isp"
-      class="net-line"
-      title="Proveedor de Internet (organización dueña de tu IP externa)"
-    >
+    <div v-if="isp" class="net-line" :title="t('panels.netstat.ispTooltip')">
       <span>ISP</span><span class="net-value">{{ isp }}</span>
     </div>
-    <div
-      v-if="localIface"
-      class="net-line"
-      title="Tu IP dentro de la red local (WiFi/Ethernet), la que usan otros dispositivos de tu casa/oficina para verte"
-    >
-      <span>IP local</span
+    <div v-if="localIface" class="net-line" :title="t('panels.netstat.localIpTooltip')">
+      <span>{{ t("panels.netstat.localIp") }}</span
       ><span class="net-value">{{ localIface.ip }} ({{ localIface.name }})</span>
     </div>
-    <div
-      class="net-line"
-      title="Tiempo de ida y vuelta de un paquete de red, en milisegundos — más bajo es mejor"
-    >
+    <div class="net-line" :title="t('panels.netstat.pingTooltip')">
       <span>Ping</span>
-      <span>{{ store.pingMs !== null ? `${store.pingMs} ms` : "N/D" }}</span>
+      <span>{{ store.pingMs !== null ? `${store.pingMs} ms` : t("panels.netstat.notAvailable") }}</span>
     </div>
 
-    <div
-      class="net-conn-title"
-      title="Conexiones TCP reales con un servidor remoto — no incluye programas solo escuchando localmente"
-    >
-      Conexiones activas{{ expanded ? ` (${store.netConnections.length})` : "" }}
+    <div class="net-conn-title" :title="t('panels.netstat.connectionsTooltip')">
+      {{ t("panels.netstat.activeConnections") }}{{ expanded ? ` (${store.netConnections.length})` : "" }}
     </div>
     <div
       v-for="(conn, i) in visibleConnections(expanded)"
       :key="i"
       class="net-conn-line"
-      :title="`${conn.processName ?? 'proceso desconocido'} conectado a ${conn.remoteAddr}:${conn.remotePort}${conn.remoteOrg ? ` (${conn.remoteOrg})` : ''}`"
+      :title="
+        t('panels.netstat.connectionTooltip', {
+          process: conn.processName ?? t('panels.netstat.unknownProcess'),
+          addr: conn.remoteAddr,
+          port: conn.remotePort,
+          org: conn.remoteOrg ? ` (${conn.remoteOrg})` : '',
+        })
+      "
     >
       <span class="net-conn-main">
         <span class="net-conn-process">{{ conn.processName ?? "?" }}</span>
         → {{ conn.remoteAddr }}:{{ conn.remotePort }}
-        <span v-if="expanded" class="net-conn-local">(local: {{ conn.localPort }})</span>
+        <span v-if="expanded" class="net-conn-local">({{ t("panels.netstat.local") }}: {{ conn.localPort }})</span>
       </span>
       <span class="net-conn-org">{{ conn.remoteOrg ?? "" }}</span>
     </div>
     <div v-if="store.netConnections.length === 0" class="net-conn-empty">
-      Sin conexiones TCP activas
+      {{ t("panels.netstat.noConnections") }}
     </div>
     <div v-else-if="!expanded && store.netConnections.length > 3" class="net-conn-more-hint">
-      +{{ store.netConnections.length - 3 }} más — click en el título para ver todas
+      {{ t("panels.netstat.moreHint", { count: store.netConnections.length - 3 }) }}
     </div>
   </PanelBox>
 </template>

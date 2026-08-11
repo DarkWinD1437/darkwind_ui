@@ -3,6 +3,7 @@ import { createPinia } from "pinia";
 import "augmented-ui/augmented-ui.min.css";
 import "@xterm/xterm/css/xterm.css";
 import { installErrorReporting } from "@/core/errors/errorReporting";
+import { i18n } from "@/core/i18n/i18n";
 import App from "./App.vue";
 
 // El original en Electron nunca mostraba el menú contextual nativo del navegador (no lo
@@ -14,4 +15,5 @@ window.addEventListener("contextmenu", (event) => event.preventDefault());
 const app = createApp(App);
 installErrorReporting(app);
 app.use(createPinia());
+app.use(i18n);
 app.mount("#app");

@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { computed } from "vue";
+import { useI18n } from "vue-i18n";
 import PanelBox from "@/shared/components/PanelBox.vue";
 import { formatExactBytes, formatMemoryBytes, formatUptime } from "@/shared/utils/formatBytes";
 import { batteryStateLabel } from "@/shared/utils/labels";
 import { useSysinfoStore } from "../stores/sysinfo.store";
 
+const { t } = useI18n();
 const store = useSysinfoStore();
 
 const cpuPct = computed(() => Math.round(store.cpu?.globalUsage ?? 0));
@@ -15,17 +17,17 @@ const batteryTimeLabel = computed(() => {
   const battery = store.battery;
   if (!battery) return null;
   if (battery.state === "Charging" && battery.timeToFullSecs) {
-    return `${formatUptime(battery.timeToFullSecs)} para cargar`;
+    return t("panels.sysinfo.timeToFull", { time: formatUptime(battery.timeToFullSecs) });
   }
   if (battery.timeToEmptySecs) {
-    return `${formatUptime(battery.timeToEmptySecs)} restante`;
+    return t("panels.sysinfo.timeRemaining", { time: formatUptime(battery.timeToEmptySecs) });
   }
   return null;
 });
 </script>
 
 <template>
-  <PanelBox title="Sistema" expandable>
+  <PanelBox :title="t('panels.sysinfo.title')" expandable>
     <div class="gauge-row">
       <span class="gauge-label">CPU</span>
       <div class="gauge-track"><div class="gauge-fill" :style="{ width: `${cpuPct}%` }" /></div>
@@ -36,15 +38,20 @@ const batteryTimeLabel = computed(() => {
       <div class="gauge-track"><div class="gauge-fill" :style="{ width: `${memPct}%` }" /></div>
       <span class="gauge-value">{{ memPct }}%</span>
     </div>
-    <div class="sysinfo-line" title="Tiempo que la PC lleva encendida sin reiniciar">
-      <span>Uptime</span><span>{{ uptime }}</span>
+    <div class="sysinfo-line" :title="t('panels.sysinfo.uptimeTooltip')">
+      <span>{{ t("panels.sysinfo.uptime") }}</span><span>{{ uptime }}</span>
     </div>
     <div
       v-if="store.mem"
       class="sysinfo-line"
-      :title="`${formatExactBytes(store.mem.used)} usados de ${formatExactBytes(store.mem.total)}`"
+      :title="
+        t('panels.sysinfo.memoryTooltip', {
+          used: formatExactBytes(store.mem.used),
+          total: formatExactBytes(store.mem.total),
+        })
+      "
     >
-      <span>Memoria</span
+      <span>{{ t("panels.sysinfo.memory") }}</span
       ><span
         >{{ formatMemoryBytes(store.mem.used) }} / {{ formatMemoryBytes(store.mem.total) }}</span
       >
@@ -52,16 +59,16 @@ const batteryTimeLabel = computed(() => {
     <div
       v-if="store.mem && store.mem.totalSwap > 0"
       class="sysinfo-line"
-      title="Memoria virtual en disco que Windows usa cuando la RAM se llena — más lenta que la RAM real"
+      :title="t('panels.sysinfo.swapTooltip')"
     >
-      <span>Swap</span
+      <span>{{ t("panels.sysinfo.swap") }}</span
       ><span
         >{{ formatMemoryBytes(store.mem.usedSwap) }} /
         {{ formatMemoryBytes(store.mem.totalSwap) }}</span
       >
     </div>
     <div v-if="store.battery" class="sysinfo-line">
-      <span>Batería</span
+      <span>{{ t("panels.sysinfo.battery") }}</span
       ><span
         >{{ Math.round(store.battery.percentage) }}% ({{
           batteryStateLabel(store.battery.state)

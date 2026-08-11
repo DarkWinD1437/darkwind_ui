@@ -4,6 +4,7 @@ export interface Settings {
   cwd: string;
   keyboard: string;
   theme: string;
+  language: string;
   termFontSize: number;
   audio: boolean;
   audioVolume: number;

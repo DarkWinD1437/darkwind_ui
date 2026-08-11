@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from "vue";
+import { useI18n } from "vue-i18n";
 import PanelBox from "@/shared/components/PanelBox.vue";
 import SparklineChart from "@/shared/components/SparklineChart.vue";
 import { formatExactBytes, formatMemoryBytes } from "@/shared/utils/formatBytes";
@@ -7,6 +8,7 @@ import { useSysinfoStore } from "../stores/sysinfo.store";
 
 // Capacidad nueva que el original nunca tuvo (solo reportaba CPU/RAM). Soporte
 // multi-fabricante (NVIDIA/AMD/Intel) vía el comando sysinfo_gpu (crate gfxinfo).
+const { t } = useI18n();
 const store = useSysinfoStore();
 
 const gpu = computed(() => store.gpu);
@@ -51,32 +53,32 @@ const tempStats = computed(() => {
            planas) la línea del sparkline queda pegada al borde y es casi imperceptible
            — el número es la fuente de información confiable, el gráfico es la tendencia. -->
       <div class="gpu-line">
-        <span>Carga</span><span>{{ gpu.loadPct }}%</span>
+        <span>{{ t("panels.gpu.load") }}</span><span>{{ gpu.loadPct }}%</span>
       </div>
       <SparklineChart
         :values="store.gpuHistory"
         :max="100"
         :height="expanded ? 50 : 28"
-        :title="expanded ? `Carga de la GPU — últimos ${store.gpuHistory.length} muestreos` : undefined"
+        :title="expanded ? t('panels.gpu.loadTooltip', { count: store.gpuHistory.length }) : undefined"
       />
 
       <!-- Expandido: gráfico de temperatura separado del de carga, ya que no siempre se
            mueven juntos (throttling térmico, límites de potencia). -->
       <template v-if="expanded">
         <div class="gpu-line gpu-line-spaced">
-          <span>Temp.</span
-          ><span>{{ gpu.temperatureC > 0 ? `${gpu.temperatureC.toFixed(0)}°C` : "sensor no disponible" }}</span>
+          <span>{{ t("panels.gpu.temperature") }}</span
+          ><span>{{ gpu.temperatureC > 0 ? `${gpu.temperatureC.toFixed(0)}°C` : t("panels.gpu.sensorUnavailable") }}</span>
         </div>
         <SparklineChart
           v-if="gpu.temperatureC > 0"
           :values="store.gpuTempHistory"
           :max="100"
           :height="30"
-          :title="`Temperatura de la GPU — últimos ${store.gpuTempHistory.length} muestreos`"
+          :title="t('panels.gpu.temperatureTooltip', { count: store.gpuTempHistory.length })"
         />
       </template>
       <div v-else-if="gpu.temperatureC > 0" class="gpu-line">
-        <span>Temp.</span><span>{{ gpu.temperatureC.toFixed(0) }}°C</span>
+        <span>{{ t("panels.gpu.temperature") }}</span><span>{{ gpu.temperatureC.toFixed(0) }}°C</span>
       </div>
 
       <!-- Compacto: texto plano. Expandido: barra de progreso, igual tratamiento que los
@@ -84,7 +86,7 @@ const tempStats = computed(() => {
       <div
         v-if="gpu.totalVram > 0 && !expanded"
         class="gpu-line"
-        title="Memoria dedicada de la GPU — separada de la RAM del sistema"
+        :title="t('panels.gpu.vramTooltip')"
       >
         <span>VRAM</span
         ><span>{{ formatMemoryBytes(gpu.usedVram) }} / {{ formatMemoryBytes(gpu.totalVram) }}</span>
@@ -92,9 +94,9 @@ const tempStats = computed(() => {
       <template v-if="gpu.totalVram > 0 && expanded">
         <p
           class="gpu-subtitle"
-          :title="`${formatExactBytes(gpu.usedVram)} usados de ${formatExactBytes(gpu.totalVram)}`"
+          :title="t('panels.gpu.vramUsedTooltip', { used: formatExactBytes(gpu.usedVram), total: formatExactBytes(gpu.totalVram) })"
         >
-          VRAM — {{ formatMemoryBytes(gpu.usedVram) }} de {{ formatMemoryBytes(gpu.totalVram) }}
+          {{ t("panels.gpu.vramOf", { used: formatMemoryBytes(gpu.usedVram), total: formatMemoryBytes(gpu.totalVram) }) }}
         </p>
         <div class="gauge-row">
           <div class="gauge-track"><div class="gauge-fill" :style="{ width: `${vramPct}%` }" /></div>
@@ -107,21 +109,17 @@ const tempStats = computed(() => {
            tarjeta, no un texto fijo. -->
       <div v-if="expanded" class="gpu-stats">
         <div v-if="gpu.totalVram > 0" class="gpu-line">
-          <span>VRAM libre</span><span>{{ formatMemoryBytes(freeVram) }}</span>
+          <span>{{ t("panels.gpu.vramFree") }}</span><span>{{ formatMemoryBytes(freeVram) }}</span>
         </div>
-        <div v-if="loadStats" class="gpu-line" title="Calculado sobre el historial visible en el gráfico de carga">
-          <span>Carga — promedio / pico</span><span>{{ loadStats.avg }}% / {{ loadStats.peak }}%</span>
+        <div v-if="loadStats" class="gpu-line" :title="t('panels.gpu.loadStatsTooltip')">
+          <span>{{ t("panels.gpu.loadStats") }}</span><span>{{ loadStats.avg }}% / {{ loadStats.peak }}%</span>
         </div>
-        <div
-          v-if="tempStats"
-          class="gpu-line"
-          title="Calculado sobre el historial visible en el gráfico de temperatura"
-        >
-          <span>Temp. — promedio / pico</span><span>{{ tempStats.avg }}°C / {{ tempStats.peak }}°C</span>
+        <div v-if="tempStats" class="gpu-line" :title="t('panels.gpu.tempStatsTooltip')">
+          <span>{{ t("panels.gpu.tempStats") }}</span><span>{{ tempStats.avg }}°C / {{ tempStats.peak }}°C</span>
         </div>
       </div>
     </template>
-    <div v-else class="gpu-empty">GPU no detectada</div>
+    <div v-else class="gpu-empty">{{ t("panels.gpu.notDetected") }}</div>
   </PanelBox>
 </template>
 

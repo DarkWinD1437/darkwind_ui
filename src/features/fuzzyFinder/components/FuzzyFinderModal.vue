@@ -4,6 +4,7 @@ import { invoke } from "@tauri-apps/api/core";
 import { useFilesystemStore } from "@/features/filesystem/stores/filesystem.store";
 import { useTerminalsStore } from "@/features/terminal/stores/terminals.store";
 import { useKeyboardStore } from "@/features/keyboard/stores/keyboard.store";
+import { registerShortcutAction } from "@/features/shortcuts/composables/useShortcutActions";
 
 const filesystemStore = useFilesystemStore();
 const terminalsStore = useTerminalsStore();
@@ -67,19 +68,28 @@ function submit(): void {
   closeFinder();
 }
 
+// Escape para cerrar es mecánica propia del modal, no una acción editable de
+// shortcuts.json — se mantiene como listener directo. Abrir el buscador sí es la
+// acción "FUZZY_SEARCH" (Ctrl+Shift+F por defecto), ahora despachada por el
+// dispatcher genérico de useGlobalShortcuts.ts en vez de un atajo fijo acá.
 function handleGlobalKeydown(event: KeyboardEvent): void {
-  if (event.ctrlKey && event.shiftKey && event.key.toLowerCase() === "f") {
-    event.preventDefault();
-    openFinder();
-  } else if (event.key === "Escape" && open.value) {
+  if (event.key === "Escape" && open.value) {
     closeFinder();
   }
 }
 
+let unregister: (() => void) | null = null;
+
 // captura=true: con la terminal enfocada, xterm.js corta la propagación del keydown
 // en fase de burbuja antes de que llegue a window — este atajo debe verse desde antes.
-onMounted(() => window.addEventListener("keydown", handleGlobalKeydown, true));
-onBeforeUnmount(() => window.removeEventListener("keydown", handleGlobalKeydown, true));
+onMounted(() => {
+  window.addEventListener("keydown", handleGlobalKeydown, true);
+  unregister = registerShortcutAction("FUZZY_SEARCH", openFinder);
+});
+onBeforeUnmount(() => {
+  window.removeEventListener("keydown", handleGlobalKeydown, true);
+  unregister?.();
+});
 </script>
 
 <template>

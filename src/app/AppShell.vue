@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref } from "vue";
+import { useI18n } from "vue-i18n";
 import { audioManager } from "@/core/audio/audioManager";
 import { readSettings } from "@/core/persistence/settingsRepository";
 import TerminalPanel from "@/features/terminal/components/TerminalPanel.vue";
@@ -15,9 +16,17 @@ import ConninfoPanel from "@/features/sysinfo/components/ConninfoPanel.vue";
 import FilesystemPanel from "@/features/filesystem/components/FilesystemPanel.vue";
 import KeyboardPanel from "@/features/keyboard/components/KeyboardPanel.vue";
 import FuzzyFinderModal from "@/features/fuzzyFinder/components/FuzzyFinderModal.vue";
+import ModalHost from "@/features/modals/components/ModalHost.vue";
+import SettingsModal from "@/features/settings/components/SettingsModal.vue";
+import ShortcutsModal from "@/features/shortcuts/components/ShortcutsModal.vue";
+import DocReaderModal from "@/features/docReader/components/DocReaderModal.vue";
+import MediaPlayerModal from "@/features/mediaPlayer/components/MediaPlayerModal.vue";
+import { useGlobalShortcuts } from "@/features/shortcuts/composables/useGlobalShortcuts";
 import { useSysinfoStore } from "@/features/sysinfo/stores/sysinfo.store";
 
+const { t } = useI18n();
 const sysinfoStore = useSysinfoStore();
+useGlobalShortcuts();
 
 const shellStage = ref<"collapsed" | "grown" | "hidden" | "shown">("collapsed");
 const titleVisible = ref(false);
@@ -93,8 +102,8 @@ onUnmounted(() => {
 <template>
   <section id="mod_column_left" class="mod_column" :class="{ activated: columnsActivated }">
     <h3 class="title">
-      <p>PANEL</p>
-      <p>SYSTEM</p>
+      <p>{{ t("appShell.panelSystem1") }}</p>
+      <p>{{ t("appShell.panelSystem2") }}</p>
     </h3>
     <ClockPanel />
     <SysinfoPanel />
@@ -110,12 +119,12 @@ onUnmounted(() => {
     }"
   >
     <h3 class="title" :class="{ visible: titleVisible }">
-      <p>TERMINAL</p>
-      <p>MAIN SHELL</p>
+      <p>{{ t("appShell.terminal1") }}</p>
+      <p>{{ t("appShell.terminal2") }}</p>
     </h3>
     <div class="main_shell_inner" data-augmented-ui="bl-clip tr-clip border">
       <h1 v-if="greeterMounted" id="main_shell_greeting" :class="{ visible: greeterVisible }">
-        Welcome back
+        {{ t("appShell.welcomeBack") }}
       </h1>
       <TerminalPanel v-else />
     </div>
@@ -123,8 +132,8 @@ onUnmounted(() => {
 
   <section id="mod_column_right" class="mod_column" :class="{ activated: columnsActivated }">
     <h3 class="title">
-      <p>PANEL</p>
-      <p>NETWORK</p>
+      <p>{{ t("appShell.panelNetwork1") }}</p>
+      <p>{{ t("appShell.panelNetwork2") }}</p>
     </h3>
     <CpuinfoPanel />
     <GpuPanel />
@@ -136,6 +145,11 @@ onUnmounted(() => {
   <section id="filesystem"><FilesystemPanel /></section>
   <section id="keyboard"><KeyboardPanel /></section>
   <FuzzyFinderModal />
+  <ModalHost />
+  <SettingsModal />
+  <ShortcutsModal />
+  <DocReaderModal />
+  <MediaPlayerModal />
 </template>
 
 <style>

@@ -1,0 +1,180 @@
+{
+  "common": {
+    "close": "Close",
+    "cancel": "Cancel",
+    "save": "Save",
+    "confirm": "Confirm",
+    "delete": "Delete",
+    "add": "Add",
+    "enabled": "Enabled",
+    "disabled": "Disabled",
+    "accept": "Accept"
+  },
+  "appShell": {
+    "panelSystem1": "PANEL",
+    "panelSystem2": "SYSTEM",
+    "panelNetwork1": "PANEL",
+    "panelNetwork2": "NETWORK",
+    "terminal1": "TERMINAL",
+    "terminal2": "MAIN SHELL",
+    "welcomeBack": "Welcome back",
+    "openSettings": "Open settings (Ctrl+Shift+S)",
+    "openShortcuts": "Open keyboard shortcuts (Ctrl+Shift+K)"
+  },
+  "settings": {
+    "title": "Settings",
+    "appearance": "Appearance",
+    "theme": "Theme",
+    "keyboardLayout": "Keyboard layout",
+    "language": "Language",
+    "languageAuto": "Automatic (system default)",
+    "termFontSize": "Terminal font size",
+    "clockHours": "Clock format",
+    "audio": "Audio",
+    "audioEnabled": "Audio enabled",
+    "audioVolume": "Volume",
+    "disableFeedbackAudio": "Mute feedback sounds (typing, navigation)",
+    "terminalNetwork": "Terminal & network",
+    "shell": "Shell",
+    "shellArgs": "Shell arguments",
+    "cwd": "Terminal starting folder",
+    "pingAddr": "Ping address",
+    "behavior": "Behavior",
+    "forceFullscreen": "Force fullscreen",
+    "allowWindowed": "Allow windowed mode",
+    "nointro": "Skip boot animation",
+    "nocursor": "Hide mouse cursor",
+    "excludeThreads": "Exclude threads from process list",
+    "hideDotfiles": "Hide dotfiles by default",
+    "fsListView": "Default to list view in file explorer",
+    "experimental": "Experimental",
+    "experimentalGlobe": "Experimental 3D globe features",
+    "experimentalGeneral": "Experimental general features"
+  },
+  "shortcuts": {
+    "title": "Keyboard shortcuts",
+    "trigger": "Trigger",
+    "action": "Action / command",
+    "type": "Type",
+    "recording": "Press a key…",
+    "clickToRecord": "Click to record",
+    "actionPlaceholder": "Action name or command",
+    "hint": "Click a trigger to rebind it (Escape cancels). \"app\"-type actions fire an internal function (some don't have a real one yet); \"shell\"-type actions send the text as a command to the active terminal tab.",
+    "deleteTitle": "Delete shortcut",
+    "deleteMessage": "Delete the \"{trigger}\" shortcut? This cannot be undone."
+  },
+  "docReader": {
+    "title": "PDF viewer",
+    "loading": "Loading document…",
+    "error": "Couldn't open this PDF"
+  },
+  "mediaPlayer": {
+    "hint": "Local playback — the file is streamed straight from disk, never fully loaded into memory.",
+    "fullscreen": "Fullscreen"
+  },
+  "labels": {
+    "batteryCharging": "Charging",
+    "batteryDischarging": "Discharging",
+    "batteryFull": "Full",
+    "batteryEmpty": "Empty",
+    "batteryUnknown": "Unknown",
+    "tcpEstablished": "Established"
+  },
+  "panels": {
+    "clock": { "title": "Clock" },
+    "sysinfo": {
+      "title": "System",
+      "timeToFull": "{time} to full charge",
+      "timeRemaining": "{time} remaining",
+      "uptime": "Uptime",
+      "uptimeTooltip": "How long the PC has been running without restarting",
+      "memory": "Memory",
+      "memoryTooltip": "{used} used of {total}",
+      "swap": "Swap",
+      "swapTooltip": "Disk-backed virtual memory Windows uses once RAM fills up — slower than real RAM",
+      "battery": "Battery"
+    },
+    "hardware": {
+      "title": "Hardware",
+      "cores": "Cores",
+      "coresTooltip": "Physical: real compute chips. Logical: includes Hyper-Threading/SMT virtual cores",
+      "coresValue": "{physical} physical / {logical} logical",
+      "totalRam": "Total RAM",
+      "host": "Host",
+      "os": "OS",
+      "disks": "Disks"
+    },
+    "ram": {
+      "title": "RAM map",
+      "canvasTooltip": "Each cell is a fixed slice of your total RAM — lit cells show how much is in use right now",
+      "caption": "Each of the {count} squares represents a fixed slice of your total RAM. Filled (brighter) squares show how much is in use right now — as you use more memory, more squares \"light up\" left to right, row by row."
+    },
+    "cpu": {
+      "title": "CPU per core",
+      "averageTooltip": "Average of all cores — last {count} samples",
+      "coreTooltip": "Core {index}: {usage}%",
+      "core": "Core {index}",
+      "frequency": "Frequency",
+      "frequencyTooltip": "Current average clock speed across cores, in megahertz",
+      "temperature": "Temp.",
+      "temperatureTooltip": "General system temperature sensor (Windows doesn't always expose a per-CPU sensor)"
+    },
+    "gpu": {
+      "load": "Load",
+      "loadTooltip": "GPU load — last {count} samples",
+      "temperature": "Temp.",
+      "sensorUnavailable": "sensor unavailable",
+      "temperatureTooltip": "GPU temperature — last {count} samples",
+      "vramTooltip": "Dedicated GPU memory — separate from system RAM",
+      "vramUsedTooltip": "{used} used of {total}",
+      "vramOf": "VRAM — {used} of {total}",
+      "vramFree": "Free VRAM",
+      "loadStats": "Load — avg / peak",
+      "loadStatsTooltip": "Calculated over the history shown in the load chart",
+      "tempStats": "Temp. — avg / peak",
+      "tempStatsTooltip": "Calculated over the history shown in the temperature chart",
+      "notDetected": "No GPU detected"
+    },
+    "toplist": {
+      "title": "Processes",
+      "pidTooltip": "Unique identifier Windows assigns to each process",
+      "name": "Name",
+      "memory": "Memory",
+      "noCmdline": "No command line available"
+    },
+    "netstat": {
+      "title": "Network",
+      "notAvailable": "N/A",
+      "externalIp": "External IP",
+      "externalIpTooltip": "The IP the rest of the internet sees you as (not your local network one)",
+      "location": "Location",
+      "locationTooltip": "Approximate location tied to your external IP, not your exact location",
+      "ispTooltip": "Internet provider (organization that owns your external IP)",
+      "localIp": "Local IP",
+      "localIpTooltip": "Your IP within the local network (WiFi/Ethernet), used by other devices at home/office to see you",
+      "pingTooltip": "Round-trip time of a network packet, in milliseconds — lower is better",
+      "connectionsTooltip": "Real TCP connections to a remote server — doesn't include programs only listening locally",
+      "activeConnections": "Active connections",
+      "connectionTooltip": "{process} connected to {addr}:{port}{org}",
+      "unknownProcess": "unknown process",
+      "local": "local",
+      "noConnections": "No active TCP connections",
+      "moreHint": "+{count} more — click the title to see all"
+    },
+    "conninfo": {
+      "title": "Network traffic",
+      "downloadTooltip": "Download speed (data coming into your PC) across all your network interfaces combined",
+      "uploadTooltip": "Upload speed (data leaving your PC) across all your network interfaces combined"
+    },
+    "filesystem": {
+      "goUp": "Go up to the parent folder",
+      "drives": "Drives",
+      "showDrives": "View all disk drives",
+      "toggleView": "Toggle between icon view and list view",
+      "toggleDotfiles": "Show or hide files starting with a dot (hidden by Unix convention)",
+      "driveFree": "{free} free of {total}",
+      "readError": "Couldn't read this folder",
+      "empty": "Empty folder"
+    }
+  }
+}

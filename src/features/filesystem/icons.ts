@@ -133,3 +133,20 @@ export function resolveMatchedIcon(matchedName: string | undefined): IconDef {
 export function specialIcon(name: CuratedIconName): IconDef {
   return ICONS[name];
 }
+
+// Clasificación liviana para decidir si abrir un archivo con un modal propio
+// (DocReader/MediaPlayer) en vez de delegar siempre a la app del sistema operativo —
+// reusa el mismo matchIcon() ya portado en vez de mantener una segunda lista de
+// extensiones en paralelo, que se desincronizaría con el tiempo.
+export type FileOpenKind = "pdf" | "audio" | "video";
+
+const MATCH_TO_OPEN_KIND: Record<string, FileOpenKind> = {
+  "icon-file-pdf": "pdf",
+  audio: "audio",
+  video: "video",
+};
+
+export function fileOpenKind(matchedName: string | undefined): FileOpenKind | null {
+  if (!matchedName) return null;
+  return MATCH_TO_OPEN_KIND[matchedName] ?? null;
+}

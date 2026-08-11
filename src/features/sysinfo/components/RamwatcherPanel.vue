@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref, watch } from "vue";
+import { useI18n } from "vue-i18n";
 import PanelBox from "@/shared/components/PanelBox.vue";
 import { useSysinfoStore } from "../stores/sysinfo.store";
+
+const { t } = useI18n();
 
 // El grid de 440 celdas del original son <div> DOM reales, con su costo de
 // layout/repintado en cada refresh. Acá se redibuja como un único <canvas>,
@@ -65,17 +68,15 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <PanelBox v-slot="{ expanded }" title="Mapa de RAM" expandable>
+  <PanelBox v-slot="{ expanded }" :title="t('panels.ram.title')" expandable>
     <canvas
       ref="canvasRef"
       class="ram-canvas"
       :class="{ 'ram-canvas-expanded': expanded }"
-      title="Cada celda es una porción fija de tu RAM total — las celdas encendidas muestran cuánto está en uso ahora"
+      :title="t('panels.ram.canvasTooltip')"
     ></canvas>
     <p v-if="expanded" class="ram-caption">
-      Cada uno de los {{ CELL_COUNT }} cuadros representa una porción fija de tu RAM total. Los
-      cuadros llenos (más brillantes) muestran cuánta está en uso ahora mismo — a medida que usás
-      más memoria, se van "encendiendo" más cuadros de izquierda a derecha, fila por fila.
+      {{ t("panels.ram.caption", { count: CELL_COUNT }) }}
     </p>
   </PanelBox>
 </template>

@@ -1,18 +1,41 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
-import { readSettings } from "@/core/persistence/settingsRepository";
 import { useThemesStore } from "@/core/theme/stores/themes.store";
+import { audioManager } from "@/core/audio/audioManager";
+import { resolveLocale, setLocale } from "@/core/i18n/i18n";
+import { useSettingsStore } from "@/features/settings/stores/settings.store";
+import { useViewportUnits } from "@/core/layout/useViewportUnits";
 import BootSequence from "@/app/BootSequence.vue";
 import AppShell from "@/app/AppShell.vue";
 
 const themesStore = useThemesStore();
+const settingsStore = useSettingsStore();
+const viewport = useViewportUnits();
 const ready = ref(false);
 const skipIntro = ref(false);
 const bootDone = ref(false);
 
 onMounted(async () => {
-  const settings = await readSettings();
+  const settings = await settingsStore.load();
+  // tauri-plugin-window-state restaura tamaño/posición/fullscreen de la sesión
+  // anterior DESPUÉS de que la ventana ya se creó — puede pisar el
+  // "fullscreen": true de tauri.conf.json con lo último que haya quedado guardado
+  // (ej. si alguna vez terminó en modo ventana por cualquier motivo). Esto reafirma
+  // en cada arranque el estado que pide Settings.forceFullscreen, sin depender de lo
+  // que el plugin haya restaurado.
+  if (settings.forceFullscreen) {
+    await viewport.setFullscreen(true).catch(() => {});
+  }
   await themesStore.applyThemeById(settings.theme);
+  setLocale(await resolveLocale(settings.language));
+  // El original nunca reconfigura su equivalente de AudioManager según lo guardado en
+  // settings.json (queda en los defaults del constructor hasta reiniciar) — acá sí se
+  // aplican audio/audioVolume/disableFeedbackAudio reales desde el primer arranque.
+  audioManager.configure({
+    enabled: settings.audio,
+    volume: settings.audioVolume,
+    feedbackEnabled: !settings.disableFeedbackAudio,
+  });
   skipIntro.value = settings.nointro;
   ready.value = true;
 });
