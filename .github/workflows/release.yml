@@ -1,0 +1,59 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      # Las 3 bases GeoLite2 no viven en el repo (licencia de MaxMind, ver
+      # src-tauri/resources/geoip/README.md) — se descargan acá con una license key
+      # propia guardada como secret, igual que tendría que hacer cualquiera que
+      # compile el proyecto a mano.
+      - name: Descargar bases GeoLite2
+        shell: bash
+        env:
+          MAXMIND_LICENSE_KEY: ${{ secrets.MAXMIND_LICENSE_KEY }}
+        run: |
+          set -e
+          mkdir -p src-tauri/resources/geoip
+          for edition in GeoLite2-City GeoLite2-ASN GeoLite2-Country; do
+            curl -sL "https://download.maxmind.com/app/geoip_download?edition_id=${edition}&license_key=${MAXMIND_LICENSE_KEY}&suffix=tar.gz" -o "${edition}.tar.gz"
+            tar -xzf "${edition}.tar.gz"
+            mv "${edition}"_*/"${edition}.mmdb" "src-tauri/resources/geoip/${edition}.mmdb"
+          done
+
+      - name: Instalar dependencias
+        run: pnpm install --frozen-lockfile
+
+      - uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+        with:
+          tagName: ${{ github.ref_name }}
+          releaseName: "darkwind_ui ${{ github.ref_name }}"
+          releaseBody: "Ver el detalle de cambios en el historial de commits."
+          # Draft a propósito: publicar un release es visible para cualquiera que
+          # tenga el link del repo — queda en borrador para revisar/editar las notas
+          # antes de tocar "Publish release" a mano en GitHub.
+          releaseDraft: true
+          prerelease: false

@@ -3,6 +3,7 @@ import { FitAddon } from "@xterm/addon-fit";
 import { SearchAddon } from "@xterm/addon-search";
 import { WebglAddon } from "@xterm/addon-webgl";
 import { Channel, invoke } from "@tauri-apps/api/core";
+import { readText, writeText } from "@tauri-apps/plugin-clipboard-manager";
 import type { ITheme } from "@xterm/xterm";
 import { TauriPtyAddon } from "../adapters/TauriPtyAddon";
 
@@ -102,6 +103,20 @@ export function useTerminal(options: UseTerminalOptions) {
     searchAddon.findPrevious(query);
   }
 
+  // El original resuelve COPY/PASTE con el portapapeles nativo de Electron
+  // (@electron/remote). Acá se usa tauri-plugin-clipboard-manager en vez de
+  // navigator.clipboard del navegador porque WebView2 pide permiso por cada llamada
+  // salvo que la página esté servida como "segura" — el plugin evita ese prompt.
+  async function copySelection(): Promise<void> {
+    const selection = terminal.getSelection();
+    if (selection) await writeText(selection);
+  }
+
+  async function pasteFromClipboard(): Promise<void> {
+    const text = await readText();
+    if (text) terminal.paste(text);
+  }
+
   async function dispose(): Promise<void> {
     resizeObserver?.disconnect();
     if (ptyId) {
@@ -110,5 +125,15 @@ export function useTerminal(options: UseTerminalOptions) {
     terminal.dispose();
   }
 
-  return { terminal, mount, dispose, focus, findNext, findPrevious, fetchStatus };
+  return {
+    terminal,
+    mount,
+    dispose,
+    focus,
+    findNext,
+    findPrevious,
+    fetchStatus,
+    copySelection,
+    pasteFromClipboard,
+  };
 }

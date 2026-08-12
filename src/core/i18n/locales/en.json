@@ -191,5 +191,14 @@
     "line2": "Ending terminal sessions...",
     "line3": "Releasing active connections...",
     "line4": "See you next time."
+  },
+  "update": {
+    "available": "An update is available: v{version} (you have v{current})",
+    "viewOnGithub": "View on GitHub",
+    "updateNow": "Update now",
+    "cancel": "Cancel",
+    "downloading": "Downloading update…",
+    "installing": "Installing and relaunching…",
+    "error": "Couldn't install the update. Try again or download it from GitHub."
   }
 }

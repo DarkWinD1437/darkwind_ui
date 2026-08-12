@@ -3,6 +3,7 @@ import { onBeforeUnmount, onMounted, ref } from "vue";
 import { useTerminalsStore } from "../stores/terminals.store";
 import TerminalInstance from "./TerminalInstance.vue";
 import { audioManager } from "@/core/audio/audioManager";
+import { registerShortcutAction } from "@/features/shortcuts/composables/useShortcutActions";
 
 const store = useTerminalsStore();
 const searchOpen = ref(false);
@@ -32,6 +33,14 @@ function closeTab(key: string): void {
   if (store.tabs.length <= 1) return;
   store.closeTab(key);
   if (store.activeKey) instanceRefs.get(store.activeKey)?.focus();
+}
+
+function focusRelativeTab(direction: 1 | -1): void {
+  if (store.tabs.length <= 1) return;
+  const index = store.tabs.findIndex((tab) => tab.key === store.activeKey);
+  if (index === -1) return;
+  const nextIndex = (index + direction + store.tabs.length) % store.tabs.length;
+  activateTab(store.tabs[nextIndex].key);
 }
 
 function openSearch(): void {
@@ -64,6 +73,12 @@ function handleKeydown(event: KeyboardEvent): void {
   }
 }
 
+let unregisterCopy: (() => void) | null = null;
+let unregisterPaste: (() => void) | null = null;
+let unregisterNextTab: (() => void) | null = null;
+let unregisterPrevTab: (() => void) | null = null;
+let unregisterTabClose: (() => void) | null = null;
+
 onMounted(() => {
   if (store.tabs.length === 0) store.openTab();
   // captura=true: xterm.js corta la propagación de este evento en fase de burbuja
@@ -71,10 +86,27 @@ onMounted(() => {
   // este mismo atajo busca en SU scrollback), un listener en window sin captura nunca
   // vería a Ctrl+F.
   window.addEventListener("keydown", handleKeydown, true);
+
+  unregisterCopy = registerShortcutAction("COPY", () => {
+    if (store.activeKey) void instanceRefs.get(store.activeKey)?.copySelection();
+  });
+  unregisterPaste = registerShortcutAction("PASTE", () => {
+    if (store.activeKey) void instanceRefs.get(store.activeKey)?.pasteFromClipboard();
+  });
+  unregisterNextTab = registerShortcutAction("NEXT_TAB", () => focusRelativeTab(1));
+  unregisterPrevTab = registerShortcutAction("PREVIOUS_TAB", () => focusRelativeTab(-1));
+  unregisterTabClose = registerShortcutAction("TAB_X", () => {
+    if (store.activeKey) closeTab(store.activeKey);
+  });
 });
 
 onBeforeUnmount(() => {
   window.removeEventListener("keydown", handleKeydown, true);
+  unregisterCopy?.();
+  unregisterPaste?.();
+  unregisterNextTab?.();
+  unregisterPrevTab?.();
+  unregisterTabClose?.();
 });
 </script>
 

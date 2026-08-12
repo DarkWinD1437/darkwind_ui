@@ -1,8 +1,8 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
   "productName": "darkwind_ui",
-  "version": "0.1.0",
-  "identifier": "com.darkwind.darkwind_ui",
+  "version": "1.0.0",
+  "identifier": "com.darkwind.darkwind-ui",
   "build": {
     "beforeDevCommand": "pnpm dev",
     "devUrl": "http://localhost:1420",
@@ -19,7 +19,7 @@
       }
     ],
     "security": {
-      "csp": null,
+      "csp": "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: asset: http://asset.localhost; media-src 'self' asset: http://asset.localhost; connect-src 'self' ipc: http://ipc.localhost asset: http://asset.localhost https://api.ipify.org https://github.com https://objects.githubusercontent.com https://github-releases.githubusercontent.com https://release-assets.githubusercontent.com; worker-src 'self' blob:; font-src 'self' data:; object-src 'none'; base-uri 'none'; form-action 'none'",
       "assetProtocol": {
         "enable": true,
         "scope": ["**"]
@@ -29,6 +29,7 @@
   "bundle": {
     "active": true,
     "targets": ["nsis"],
+    "createUpdaterArtifacts": true,
     "icon": [
       "icons/32x32.png",
       "icons/128x128.png",
@@ -40,6 +41,12 @@
       "resources/geoip/GeoLite2-City.mmdb": "geoip/GeoLite2-City.mmdb",
       "resources/geoip/GeoLite2-ASN.mmdb": "geoip/GeoLite2-ASN.mmdb",
       "resources/geoip/GeoLite2-Country.mmdb": "geoip/GeoLite2-Country.mmdb"
+    }
+  },
+  "plugins": {
+    "updater": {
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEVGQjZCNERFMTQzNjVDOTAKUldTUVhEWVUzclMyNzJjMTNETDlxUCsxNXlQc09pdEhXY1dOYy9QaUNNWWhSQXVNak1UQXVKTUcK",
+      "endpoints": ["https://github.com/DarkWinD1437/darkwind_ui/releases/latest/download/latest.json"]
     }
   }
 }

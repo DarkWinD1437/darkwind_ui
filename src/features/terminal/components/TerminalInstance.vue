@@ -19,6 +19,8 @@ defineExpose({
   focus: () => terminalApi?.focus(),
   findNext: (query: string) => terminalApi?.findNext(query),
   findPrevious: (query: string) => terminalApi?.findPrevious(query),
+  copySelection: () => terminalApi?.copySelection(),
+  pasteFromClipboard: () => terminalApi?.pasteFromClipboard(),
 });
 
 onMounted(async () => {

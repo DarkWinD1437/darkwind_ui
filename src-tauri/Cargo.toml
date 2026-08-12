@@ -22,7 +22,6 @@ tauri = { version = "2", features = ["protocol-asset"] }
 tauri-plugin-opener = "2"
 serde = { version = "1", features = ["derive"] }
 serde_json = { version = "1", features = ["preserve_order"] }
-tauri-plugin-dialog = "2.7.2"
 tauri-plugin-clipboard-manager = "2.3.2"
 tauri-plugin-window-state = "2.4.1"
 tauri-plugin-log = "2.9.0"
@@ -35,4 +34,6 @@ starship-battery = "0.11.1"
 netstat2 = "0.11.2"
 maxminddb = "0.30.0"
 gfxinfo = "0.1.2"
+tauri-plugin-updater = "2.10.1"
+tauri-plugin-process = "2.3.1"
 

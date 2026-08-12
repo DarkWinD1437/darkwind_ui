@@ -27,6 +27,7 @@ import MediaPlayerModal from "@/features/mediaPlayer/components/MediaPlayerModal
 import { useGlobalShortcuts } from "@/features/shortcuts/composables/useGlobalShortcuts";
 import { registerShortcutAction } from "@/features/shortcuts/composables/useShortcutActions";
 import { useSysinfoStore } from "@/features/sysinfo/stores/sysinfo.store";
+import UpdateBanner from "@/features/update/components/UpdateBanner.vue";
 import ShutdownOverlay from "./ShutdownOverlay.vue";
 
 const { t } = useI18n();
@@ -224,6 +225,7 @@ onUnmounted(() => {
   <ShortcutsModal />
   <DocReaderModal />
   <MediaPlayerModal />
+  <UpdateBanner v-if="!isClosing" />
   <ShutdownOverlay v-if="isClosing" />
 </template>
 
