@@ -104,11 +104,6 @@
       "os": "OS",
       "disks": "Disks"
     },
-    "ram": {
-      "title": "RAM map",
-      "canvasTooltip": "Each cell is a fixed slice of your total RAM — lit cells show how much is in use right now",
-      "caption": "Each of the {count} squares represents a fixed slice of your total RAM. Filled (brighter) squares show how much is in use right now — as you use more memory, more squares \"light up\" left to right, row by row."
-    },
     "cpu": {
       "title": "CPU per core",
       "averageTooltip": "Average of all cores — last {count} samples",
@@ -165,6 +160,18 @@
       "title": "Network traffic",
       "downloadTooltip": "Download speed (data coming into your PC) across all your network interfaces combined",
       "uploadTooltip": "Upload speed (data leaving your PC) across all your network interfaces combined"
+    },
+    "globe": {
+      "title": "Globe",
+      "subtitle": "Global network map",
+      "endpointLabel": "Lat/Lon:",
+      "endpointTooltip": "Approximate location tied to your external IP",
+      "unknown": "unknown",
+      "webglUnavailable": "Couldn't start 3D rendering on this machine (WebGL unavailable)",
+      "offline": "Offline — couldn't geolocate your external IP",
+      "connectionsHint": "{count} active connection(s) plotted on the map",
+      "enableHint": "Enable \"Experimental 3D globe features\" in Settings to see your active connections on the map",
+      "dragHint": "Drag to rotate the globe — auto-rotation resumes on its own"
     },
     "filesystem": {
       "goUp": "Go up to the parent folder",

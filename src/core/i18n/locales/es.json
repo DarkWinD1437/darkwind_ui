@@ -104,11 +104,6 @@
       "os": "SO",
       "disks": "Discos"
     },
-    "ram": {
-      "title": "Mapa de RAM",
-      "canvasTooltip": "Cada celda es una porción fija de tu RAM total — las celdas encendidas muestran cuánto está en uso ahora",
-      "caption": "Cada uno de los {count} cuadros representa una porción fija de tu RAM total. Los cuadros llenos (más brillantes) muestran cuánta está en uso ahora mismo — a medida que usás más memoria, se van \"encendiendo\" más cuadros de izquierda a derecha, fila por fila."
-    },
     "cpu": {
       "title": "CPU por núcleo",
       "averageTooltip": "Promedio de todos los núcleos — últimos {count} muestreos",
@@ -165,6 +160,18 @@
       "title": "Tráfico de red",
       "downloadTooltip": "Velocidad de descarga (datos que entran a tu PC) de todas tus interfaces de red sumadas",
       "uploadTooltip": "Velocidad de subida (datos que salen de tu PC) de todas tus interfaces de red sumadas"
+    },
+    "globe": {
+      "title": "Globo",
+      "subtitle": "Mapa de red global",
+      "endpointLabel": "Lat/Lon:",
+      "endpointTooltip": "Ubicación aproximada asociada a tu IP externa",
+      "unknown": "desconocido",
+      "webglUnavailable": "No se pudo iniciar el renderizado 3D en este equipo (WebGL no disponible)",
+      "offline": "Sin conexión — no se pudo geolocalizar tu IP externa",
+      "connectionsHint": "{count} conexión(es) activa(s) trazada(s) en el mapa",
+      "enableHint": "Activá \"Funciones experimentales del globo 3D\" en Ajustes para ver tus conexiones activas en el mapa",
+      "dragHint": "Arrastrá para rotar el globo — la rotación automática se reanuda sola"
     },
     "filesystem": {
       "goUp": "Subir a la carpeta contenedora",

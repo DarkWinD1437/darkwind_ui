@@ -7,11 +7,11 @@ import TerminalPanel from "@/features/terminal/components/TerminalPanel.vue";
 import ClockPanel from "@/features/sysinfo/components/ClockPanel.vue";
 import SysinfoPanel from "@/features/sysinfo/components/SysinfoPanel.vue";
 import HardwareInspectorPanel from "@/features/sysinfo/components/HardwareInspectorPanel.vue";
-import RamwatcherPanel from "@/features/sysinfo/components/RamwatcherPanel.vue";
 import CpuinfoPanel from "@/features/sysinfo/components/CpuinfoPanel.vue";
 import GpuPanel from "@/features/sysinfo/components/GpuPanel.vue";
 import ToplistPanel from "@/features/sysinfo/components/ToplistPanel.vue";
 import NetstatPanel from "@/features/sysinfo/components/NetstatPanel.vue";
+import GlobePanel from "@/features/globe/components/GlobePanel.vue";
 import ConninfoPanel from "@/features/sysinfo/components/ConninfoPanel.vue";
 import FilesystemPanel from "@/features/filesystem/components/FilesystemPanel.vue";
 import KeyboardPanel from "@/features/keyboard/components/KeyboardPanel.vue";
@@ -108,7 +108,8 @@ onUnmounted(() => {
     <ClockPanel />
     <SysinfoPanel />
     <HardwareInspectorPanel />
-    <RamwatcherPanel />
+    <CpuinfoPanel />
+    <GpuPanel />
   </section>
 
   <section
@@ -135,10 +136,9 @@ onUnmounted(() => {
       <p>{{ t("appShell.panelNetwork1") }}</p>
       <p>{{ t("appShell.panelNetwork2") }}</p>
     </h3>
-    <CpuinfoPanel />
-    <GpuPanel />
     <ToplistPanel />
     <NetstatPanel />
+    <GlobePanel />
     <ConninfoPanel />
   </section>
 
