@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref } from "vue";
 import { useI18n } from "vue-i18n";
+import { invoke } from "@tauri-apps/api/core";
+import { getCurrentWindow } from "@tauri-apps/api/window";
 import { audioManager } from "@/core/audio/audioManager";
 import { readSettings } from "@/core/persistence/settingsRepository";
+import { useTerminalsStore } from "@/features/terminal/stores/terminals.store";
 import TerminalPanel from "@/features/terminal/components/TerminalPanel.vue";
 import ClockPanel from "@/features/sysinfo/components/ClockPanel.vue";
 import SysinfoPanel from "@/features/sysinfo/components/SysinfoPanel.vue";
@@ -22,10 +25,13 @@ import ShortcutsModal from "@/features/shortcuts/components/ShortcutsModal.vue";
 import DocReaderModal from "@/features/docReader/components/DocReaderModal.vue";
 import MediaPlayerModal from "@/features/mediaPlayer/components/MediaPlayerModal.vue";
 import { useGlobalShortcuts } from "@/features/shortcuts/composables/useGlobalShortcuts";
+import { registerShortcutAction } from "@/features/shortcuts/composables/useShortcutActions";
 import { useSysinfoStore } from "@/features/sysinfo/stores/sysinfo.store";
+import ShutdownOverlay from "./ShutdownOverlay.vue";
 
 const { t } = useI18n();
 const sysinfoStore = useSysinfoStore();
+const terminalsStore = useTerminalsStore();
 useGlobalShortcuts();
 
 const shellStage = ref<"collapsed" | "grown" | "hidden" | "shown">("collapsed");
@@ -33,6 +39,7 @@ const titleVisible = ref(false);
 const greeterVisible = ref(false);
 const greeterMounted = ref(true);
 const columnsActivated = ref(false);
+const isClosing = ref(false);
 
 function delay(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -89,18 +96,80 @@ async function playReveal(): Promise<void> {
   }, 500);
 }
 
+// El original cierra con app.quit()/electron.remote.app.quit() directo, sin ningún
+// paso visual (Sección 15 #13 / 19.13 del plan) — pieza enteramente nueva acá.
+// getCurrentWindow().onCloseRequested() intercepta el cierre (click en la X, Alt+F4)
+// ANTES de que la ventana desaparezca, deja correr la animación de salida (reverso del
+// fade-in de columnas + overlay con "Cerrando sesión...") y solo entonces destruye la
+// ventana de verdad — destroy() no vuelve a disparar onCloseRequested (a diferencia de
+// close()), así que no hace falta protegerse de un loop.
+let closeUnlisten: (() => void) | null = null;
+
+async function killAllTerminals(): Promise<void> {
+  await Promise.all(
+    terminalsStore.tabs
+      .filter((tab) => tab.ptyId)
+      .map((tab) => invoke("pty_kill", { id: tab.ptyId }).catch(() => {})),
+  );
+}
+
+async function beginShutdown(): Promise<void> {
+  // Guarda contra el usuario insistiendo en cerrar (doble click en la X, etc.)
+  // mientras la animación todavía está corriendo.
+  if (isClosing.value) return;
+  isClosing.value = true;
+  // El sonido y el timing de la coreografía completa (glitch del branding + log de
+  // cierre, ~5.9s, Sección 19.22 del plan) los maneja ShutdownOverlay.vue — acá solo se
+  // espera lo suficiente para que termine de correr antes de destruir la ventana de
+  // verdad.
+  await Promise.all([killAllTerminals(), delay(6000)]);
+  closeUnlisten?.();
+  await getCurrentWindow().destroy();
+}
+
 onMounted(() => {
   playReveal();
+});
+
+// Botón/atajo de salir (⏻ en el explorador de archivos, Ctrl+Shift+Q) — en pantalla
+// completa forzada no hay barra de título ni "X" nativa del SO para cerrar, así que
+// sin esto la única forma de salir quedaba en Alt+F4 (funciona igual, pero no es
+// descubrible). Dispara la MISMA secuencia que cerrar la ventana de verdad.
+let unregisterQuit: (() => void) | null = null;
+onMounted(() => {
+  unregisterQuit = registerShortcutAction("QUIT", () => void beginShutdown());
+});
+
+onMounted(async () => {
+  // getCurrentWindow() lanza SINCRÓNICAMENTE si window.__TAURI_INTERNALS__.metadata no
+  // existe (mismo caso que useViewportUnits.ts en App.vue) — acá ese throw se
+  // convierte solo en el rechazo de ESTA función async, así que alcanza con un
+  // try/catch a su alrededor para no dejar una promesa sin atrapar.
+  try {
+    closeUnlisten = await getCurrentWindow().onCloseRequested(async (event) => {
+      event.preventDefault();
+      await beginShutdown();
+    });
+  } catch {
+    // Sin ventana real detrás (ej. arnés de tests) no hay cierre nativo que
+    // interceptar — no bloquea el resto del arranque de AppShell.
+  }
 });
 
 onUnmounted(() => {
   document.body.setAttribute("class", "");
   sysinfoStore.stop();
+  closeUnlisten?.();
+  unregisterQuit?.();
 });
 </script>
 
 <template>
-  <section id="mod_column_left" class="mod_column" :class="{ activated: columnsActivated }">
+  <section
+    id="mod_column_left"
+    class="mod_column"
+    :class="{ activated: columnsActivated, closing: isClosing }"
+  >
     <h3 class="title">
       <p>{{ t("appShell.panelSystem1") }}</p>
       <p>{{ t("appShell.panelSystem2") }}</p>
@@ -117,6 +186,7 @@ onUnmounted(() => {
     :class="{
       grown: shellStage === 'grown' || shellStage === 'hidden' || shellStage === 'shown',
       faded: shellStage === 'hidden',
+      closing: isClosing,
     }"
   >
     <h3 class="title" :class="{ visible: titleVisible }">
@@ -131,7 +201,11 @@ onUnmounted(() => {
     </div>
   </section>
 
-  <section id="mod_column_right" class="mod_column" :class="{ activated: columnsActivated }">
+  <section
+    id="mod_column_right"
+    class="mod_column"
+    :class="{ activated: columnsActivated, closing: isClosing }"
+  >
     <h3 class="title">
       <p>{{ t("appShell.panelNetwork1") }}</p>
       <p>{{ t("appShell.panelNetwork2") }}</p>
@@ -142,14 +216,15 @@ onUnmounted(() => {
     <ConninfoPanel />
   </section>
 
-  <section id="filesystem"><FilesystemPanel /></section>
-  <section id="keyboard"><KeyboardPanel /></section>
+  <section id="filesystem" :class="{ closing: isClosing }"><FilesystemPanel /></section>
+  <section id="keyboard" :class="{ closing: isClosing }"><KeyboardPanel /></section>
   <FuzzyFinderModal />
   <ModalHost />
   <SettingsModal />
   <ShortcutsModal />
   <DocReaderModal />
   <MediaPlayerModal />
+  <ShutdownOverlay v-if="isClosing" />
 </template>
 
 <style>
@@ -330,6 +405,7 @@ section#filesystem {
   height: 30vh;
   margin-right: 0.5vw;
   opacity: 1;
+  transition: opacity 0.5s cubic-bezier(0.4, 0, 1, 1);
 }
 
 section#keyboard {
@@ -340,5 +416,13 @@ section#keyboard {
   position: relative;
   top: -0.925vh;
   opacity: 1;
+  transition: opacity 0.5s cubic-bezier(0.4, 0, 1, 1);
+}
+
+/* Animación de cierre (Sección 15 #13 del plan) — reverso del fade-in de arranque de
+   arriba: reusa la MISMA transición de opacity que cada sección ya tenía (columnas,
+   main_shell, filesystem, keyboard) en vez de definir una nueva. */
+.closing {
+  opacity: 0 !important;
 }
 </style>

@@ -26,6 +26,11 @@ export function useTerminal(options: UseTerminalOptions) {
     fontFamily: `"${options.fontFamily}", monospace`,
     fontSize: options.fontSize,
     cursorStyle: options.cursorStyle,
+    // xterm.js no titila el cursor por defecto — el original SÍ lo hacía siempre
+    // (terminal.class.js, cursorBlink queda en true pase lo que pase por un `|| true`
+    // en su lectura del tema). Sin esto el cursor de la terminal quedaba fijo, la
+    // única animación "operacional" del inventario de Fase 7 que todavía faltaba.
+    cursorBlink: true,
     theme: options.theme,
     allowProposedApi: true,
   });

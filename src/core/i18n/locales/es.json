@@ -19,7 +19,8 @@
     "terminal2": "CONSOLA PRINCIPAL",
     "welcomeBack": "Bienvenido de nuevo",
     "openSettings": "Abrir configuración (Ctrl+Shift+S)",
-    "openShortcuts": "Abrir atajos de teclado (Ctrl+Shift+K)"
+    "openShortcuts": "Abrir atajos de teclado (Ctrl+Shift+K)",
+    "quit": "Salir de DarkWinD_UI (Ctrl+Shift+Q)"
   },
   "settings": {
     "title": "Configuración",
@@ -181,7 +182,14 @@
       "toggleDotfiles": "Mostrar u ocultar archivos que empiezan con un punto (ocultos por convención en Unix)",
       "driveFree": "{free} libres de {total}",
       "readError": "No se pudo leer esta carpeta",
+      "loading": "Leyendo carpeta…",
       "empty": "Carpeta vacía"
     }
+  },
+  "shutdown": {
+    "line1": "Cerrando entorno de desarrollo...",
+    "line2": "Finalizando sesiones de terminal...",
+    "line3": "Liberando conexiones activas...",
+    "line4": "Hasta la próxima."
   }
 }

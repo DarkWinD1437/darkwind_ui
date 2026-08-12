@@ -168,6 +168,14 @@ onBeforeUnmount(() => {
       >
         ⌨
       </button>
+      <button
+        type="button"
+        class="fs-quit-btn"
+        :title="t('appShell.quit')"
+        @click="dispatchShortcutAction('QUIT')"
+      >
+        ⏻
+      </button>
     </div>
 
     <div class="fs-body" :class="{ 'list-view': store.listView }">
@@ -195,7 +203,8 @@ onBeforeUnmount(() => {
           @activate="activateEntry(entry)"
         />
         <div v-if="store.failed" class="fs-empty">{{ t("panels.filesystem.readError") }}</div>
-        <div v-else-if="store.visibleEntries.length === 0 && !store.loading" class="fs-empty">
+        <div v-else-if="store.loading" class="fs-loading">{{ t("panels.filesystem.loading") }}</div>
+        <div v-else-if="store.visibleEntries.length === 0" class="fs-empty">
           {{ t("panels.filesystem.empty") }}
         </div>
       </template>
@@ -236,6 +245,13 @@ onBeforeUnmount(() => {
 .fs-toolbar button.fs-toggle-active {
   background: rgb(var(--color_r), var(--color_g), var(--color_b));
   color: var(--color_black);
+}
+/* Rojo universal al pasar el mouse (no el acento del tema) — misma lógica que los
+   íconos de error/warning de ModalHost.vue: es una acción destructiva/de salida, se
+   quiere que se lea como tal sin importar qué tema esté activo. */
+.fs-quit-btn:hover {
+  border-color: #ff5f5f;
+  color: #ff5f5f;
 }
 .fs-toolbar-spacer {
   flex: 1;
@@ -287,5 +303,26 @@ onBeforeUnmount(() => {
   font-size: 0.9vh;
   padding: 1vh 0;
   text-align: center;
+}
+
+/* Antes, mientras se leía una carpeta (fs_list_dir en vuelo) sin resultados todavía, no
+   se mostraba nada — reemplaza al "space_bar_working" del original (indicador animado
+   de "procesando" en el explorador de archivos). */
+.fs-loading {
+  grid-column: 1 / -1;
+  opacity: 0.5;
+  font-size: 0.9vh;
+  padding: 1vh 0;
+  text-align: center;
+  animation: fs-loading-pulse 1.2s ease-in-out infinite;
+}
+@keyframes fs-loading-pulse {
+  0%,
+  100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 0.75;
+  }
 }
 </style>

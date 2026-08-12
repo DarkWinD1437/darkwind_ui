@@ -19,7 +19,8 @@
     "terminal2": "MAIN SHELL",
     "welcomeBack": "Welcome back",
     "openSettings": "Open settings (Ctrl+Shift+S)",
-    "openShortcuts": "Open keyboard shortcuts (Ctrl+Shift+K)"
+    "openShortcuts": "Open keyboard shortcuts (Ctrl+Shift+K)",
+    "quit": "Quit DarkWinD_UI (Ctrl+Shift+Q)"
   },
   "settings": {
     "title": "Settings",
@@ -181,7 +182,14 @@
       "toggleDotfiles": "Show or hide files starting with a dot (hidden by Unix convention)",
       "driveFree": "{free} free of {total}",
       "readError": "Couldn't read this folder",
+      "loading": "Reading folder…",
       "empty": "Empty folder"
     }
+  },
+  "shutdown": {
+    "line1": "Shutting down the development environment...",
+    "line2": "Ending terminal sessions...",
+    "line3": "Releasing active connections...",
+    "line4": "See you next time."
   }
 }

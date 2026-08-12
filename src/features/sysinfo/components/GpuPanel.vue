@@ -152,7 +152,7 @@ const tempStats = computed(() => {
 .gpu-stats {
   margin-top: 1vh;
   padding-top: 0.6vh;
-  border-top: 1px solid rgba(var(--color_r), var(--color_g), var(--color_b), 0.2);
+  border-top: 0.09vh solid rgba(var(--color_r), var(--color_g), var(--color_b), 0.2);
   display: flex;
   flex-direction: column;
   gap: 0.3vh;

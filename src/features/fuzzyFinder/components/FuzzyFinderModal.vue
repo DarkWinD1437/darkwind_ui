@@ -149,7 +149,7 @@ onBeforeUnmount(() => {
   background: transparent;
   border: 0.09vh solid rgba(var(--color_r), var(--color_g), var(--color_b), 0.5);
   color: inherit;
-  font-family: var(--font_mono, monospace);
+  font-family: var(--font_mono), monospace;
   font-size: 1vh;
   padding: 0.6vh;
   outline: none;

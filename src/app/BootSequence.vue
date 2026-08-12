@@ -145,7 +145,10 @@ section#boot_screen {
   margin: 0;
   overflow: hidden;
 
-  font-family: monospace;
+  /* El genérico "monospace" del navegador ignoraba la mono del tema activo (--font_mono,
+     ej. Fira Mono) — el log de arranque quedaba con una tipografía distinta al resto de
+     la app en modo monoespaciado (terminal, reloj). */
+  font-family: var(--font_mono), monospace;
   font-size: 1.4vh;
   text-align: left;
   display: flex;
@@ -179,12 +182,16 @@ section#boot_screen.center {
 
 .boot-title.stage-filled {
   background-color: rgb(var(--color_r), var(--color_g), var(--color_b));
-  border-bottom: 5px solid rgb(var(--color_r), var(--color_g), var(--color_b));
+  /* 0.46vh en vez de un px fijo: mismo valor que ya usa .boot-title más abajo para su
+     border-bottom base — el resto del proyecto es vh de punta a punta (Sección 14.1
+     del plan, ventana fullscreen-kiosk), un borde en px quedaba desproporcionado según
+     la resolución real en vez de escalar con el viewport como todo lo demás. */
+  border-bottom: 0.46vh solid rgb(var(--color_r), var(--color_g), var(--color_b));
 }
 
 .boot-title.stage-bordered {
   background-color: transparent;
-  border: 5px solid rgb(var(--color_r), var(--color_g), var(--color_b));
+  border: 0.46vh solid rgb(var(--color_r), var(--color_g), var(--color_b));
 }
 
 .boot-title.stage-clear {

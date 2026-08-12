@@ -161,6 +161,7 @@ pub fn default_shortcuts() -> Vec<Shortcut> {
         app("Ctrl+X", "TAB_X", true),
         app("Ctrl+Shift+S", "SETTINGS", true),
         app("Ctrl+Shift+K", "SHORTCUTS", true),
+        app("Ctrl+Shift+Q", "QUIT", true),
         app("Ctrl+Shift+F", "FUZZY_SEARCH", true),
         app("Ctrl+Shift+L", "FS_LIST_VIEW", true),
         app("Ctrl+Shift+H", "FS_DOTFILES", true),
@@ -251,5 +252,14 @@ mod tests {
         let shortcuts = default_shortcuts();
         assert!(shortcuts.iter().any(|s| s.action == "SETTINGS" && s.trigger == "Ctrl+Shift+S"));
         assert!(shortcuts.iter().any(|s| s.action == "SHORTCUTS" && s.trigger == "Ctrl+Shift+K"));
+    }
+
+    // En pantalla completa forzada no hay barra de título ni botón "X" nativo del SO
+    // para cerrar — sin un atajo/botón propio, la única forma de salir quedaba en
+    // Alt+F4 (funciona igual a nivel de SO, pero no es descubrible para el usuario).
+    #[test]
+    fn default_shortcuts_has_quit_action() {
+        let shortcuts = default_shortcuts();
+        assert!(shortcuts.iter().any(|s| s.action == "QUIT" && s.trigger == "Ctrl+Shift+Q"));
     }
 }
