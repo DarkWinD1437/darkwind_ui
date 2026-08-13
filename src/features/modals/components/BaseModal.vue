@@ -120,7 +120,7 @@ onBeforeUnmount(() => {
   justify-content: space-between;
   align-items: center;
   padding: 1.2vh 1.6vh;
-  font-size: 1.6vh;
+  font-size: calc(1.6vh * var(--ui-font-scale, 1));
   text-transform: uppercase;
   letter-spacing: 0.05vh;
   border-bottom: 0.09vh solid rgba(var(--color_r), var(--color_g), var(--color_b), 0.3);
@@ -134,7 +134,7 @@ onBeforeUnmount(() => {
   border: none;
   color: inherit;
   cursor: pointer;
-  font-size: 1.5vh;
+  font-size: calc(1.5vh * var(--ui-font-scale, 1));
   opacity: 0.75;
 }
 .base-modal-close:hover {
@@ -148,7 +148,7 @@ onBeforeUnmount(() => {
   /* Antes 1.1vh (~12px en 1080p) — casi ilegible en un modal pensado para leerse de
      cerca, no de reojo como los paneles compactos de la columna lateral. Reportado
      por el usuario. */
-  font-size: 1.6vh;
+  font-size: calc(1.6vh * var(--ui-font-scale, 1));
 }
 .base-modal-body::-webkit-scrollbar {
   width: 0.7vh;

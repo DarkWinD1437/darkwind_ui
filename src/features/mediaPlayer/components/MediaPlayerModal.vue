@@ -284,7 +284,7 @@ onBeforeUnmount(() => {
   align-items: center;
 }
 .player-audio-icon {
-  font-size: 6vh;
+  font-size: calc(6vh * var(--ui-font-scale, 1));
   opacity: 0.5;
   text-align: center;
   padding: 2vh 0;
@@ -302,12 +302,12 @@ onBeforeUnmount(() => {
   border: 0.09vh solid rgba(var(--color_r), var(--color_g), var(--color_b), 0.5);
   color: inherit;
   cursor: pointer;
-  font-size: 1.3vh;
+  font-size: calc(1.3vh * var(--ui-font-scale, 1));
   padding: 0.4vh 0.8vh;
   flex-shrink: 0;
 }
 .player-time {
-  font-size: 1.1vh;
+  font-size: calc(1.1vh * var(--ui-font-scale, 1));
   opacity: 0.75;
   white-space: nowrap;
   flex-shrink: 0;
@@ -327,6 +327,6 @@ onBeforeUnmount(() => {
 .player-hint {
   margin: 1vh 0 0;
   opacity: 0.5;
-  font-size: 0.75vh;
+  font-size: calc(0.75vh * var(--ui-font-scale, 1));
 }
 </style>

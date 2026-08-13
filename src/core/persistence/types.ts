@@ -5,6 +5,8 @@ export interface Settings {
   keyboard: string;
   theme: string;
   language: string;
+  uiScale: number;
+  virtualKeyboard: boolean;
   termFontSize: number;
   audio: boolean;
   audioVolume: number;
@@ -15,7 +17,6 @@ export interface Settings {
   nointro: boolean;
   nocursor: boolean;
   forceFullscreen: boolean;
-  allowWindowed: boolean;
   excludeThreadsFromToplist: boolean;
   hideDotfiles: boolean;
   fsListView: boolean;

@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref } from "vue";
+import { computed, onMounted, onUnmounted, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { invoke } from "@tauri-apps/api/core";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { audioManager } from "@/core/audio/audioManager";
 import { readSettings } from "@/core/persistence/settingsRepository";
+import { useSettingsStore } from "@/features/settings/stores/settings.store";
 import { useTerminalsStore } from "@/features/terminal/stores/terminals.store";
 import TerminalPanel from "@/features/terminal/components/TerminalPanel.vue";
 import ClockPanel from "@/features/sysinfo/components/ClockPanel.vue";
@@ -33,7 +34,13 @@ import ShutdownOverlay from "./ShutdownOverlay.vue";
 const { t } = useI18n();
 const sysinfoStore = useSysinfoStore();
 const terminalsStore = useTerminalsStore();
+const settingsStore = useSettingsStore();
 useGlobalShortcuts();
+
+// Settings ya está cargado por App.vue antes de montar AppShell (ver onMounted de
+// App.vue) — se lee reactivo acá para que tildar/destildar "Mostrar teclado virtual"
+// en SettingsModal reorganice el layout al toque, sin reiniciar la app.
+const showVirtualKeyboard = computed(() => settingsStore.current?.virtualKeyboard ?? true);
 
 const shellStage = ref<"collapsed" | "grown" | "hidden" | "shown">("collapsed");
 const titleVisible = ref(false);
@@ -217,8 +224,15 @@ onUnmounted(() => {
     <ConninfoPanel />
   </section>
 
-  <section id="filesystem" :class="{ closing: isClosing }"><FilesystemPanel /></section>
-  <section id="keyboard" :class="{ closing: isClosing }"><KeyboardPanel /></section>
+  <section
+    id="filesystem"
+    :class="{ closing: isClosing, 'no-keyboard': !showVirtualKeyboard }"
+  >
+    <FilesystemPanel />
+  </section>
+  <section v-if="showVirtualKeyboard" id="keyboard" :class="{ closing: isClosing }">
+    <KeyboardPanel />
+  </section>
   <FuzzyFinderModal />
   <ModalHost />
   <SettingsModal />
@@ -259,7 +273,7 @@ section > h3.title:first-child {
   position: fixed;
   margin: 0;
   padding: 0 0.925vh;
-  font-size: 1.02vh;
+  font-size: calc(1.02vh * var(--ui-font-scale, 1));
   border-bottom: 0.092vh solid rgba(var(--color_r), var(--color_g), var(--color_b), 0.3);
 }
 section > h3.title:first-child > p {
@@ -390,7 +404,7 @@ section.mod_column > :deep(div) {
 }
 
 h1#main_shell_greeting {
-  font-size: 3.9vh;
+  font-size: calc(3.9vh * var(--ui-font-scale, 1));
   font-weight: normal;
   margin: auto;
   opacity: 0;
@@ -407,7 +421,18 @@ section#filesystem {
   height: 30vh;
   margin-right: 0.5vw;
   opacity: 1;
-  transition: opacity 0.5s cubic-bezier(0.4, 0, 1, 1);
+  transition:
+    opacity 0.5s cubic-bezier(0.4, 0, 1, 1),
+    width 0.4s cubic-bezier(0.4, 0, 1, 1);
+}
+
+/* Sin teclado virtual, FilesystemPanel absorbe el ancho combinado que antes se
+   repartía con #keyboard (43vw + 0.5vw de margen + 55.5vw ≈ 99vw) — su grilla ya usa
+   `repeat(auto-fill, minmax(8.5vh, 1fr))` (FilesystemPanel.vue), así que gana columnas
+   de íconos solo, sin tocar nada del resto de la grilla de AppShell. */
+section#filesystem.no-keyboard {
+  width: 90vw;
+  margin-right: 0;
 }
 
 section#keyboard {

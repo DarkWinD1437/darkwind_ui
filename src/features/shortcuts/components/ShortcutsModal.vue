@@ -185,12 +185,12 @@ defineExpose({ openModal });
 .shortcuts-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 1.3vh;
+  font-size: calc(1.3vh * var(--ui-font-scale, 1));
 }
 .shortcuts-table th {
   text-align: left;
   text-transform: uppercase;
-  font-size: 1.05vh;
+  font-size: calc(1.05vh * var(--ui-font-scale, 1));
   opacity: 0.6;
   padding: 0.4vh 0.6vh;
   border-bottom: 0.09vh solid rgba(var(--color_r), var(--color_g), var(--color_b), 0.3);
@@ -207,7 +207,7 @@ defineExpose({ openModal });
 }
 .trigger-btn {
   font-family: inherit;
-  font-size: 1.2vh;
+  font-size: calc(1.2vh * var(--ui-font-scale, 1));
   background: rgba(var(--color_r), var(--color_g), var(--color_b), 0.1);
   border: 0.09vh solid rgba(var(--color_r), var(--color_g), var(--color_b), 0.4);
   color: inherit;
@@ -226,7 +226,7 @@ defineExpose({ openModal });
   border: 0.09vh solid rgba(var(--color_r), var(--color_g), var(--color_b), 0.3);
   color: inherit;
   font-family: inherit;
-  font-size: 1.2vh;
+  font-size: calc(1.2vh * var(--ui-font-scale, 1));
   padding: 0.35vh 0.6vh;
 }
 /* Mismo fix que SettingsModal: el popup nativo de <select> ignoraba el fondo
@@ -237,7 +237,7 @@ defineExpose({ openModal });
   color: inherit;
   color-scheme: dark;
   font-family: inherit;
-  font-size: 1.2vh;
+  font-size: calc(1.2vh * var(--ui-font-scale, 1));
   cursor: pointer;
 }
 .row-delete,
@@ -247,7 +247,7 @@ defineExpose({ openModal });
   color: inherit;
   cursor: pointer;
   opacity: 0.7;
-  font-size: 1.3vh;
+  font-size: calc(1.3vh * var(--ui-font-scale, 1));
 }
 .row-delete:hover,
 .row-add:hover {
@@ -256,7 +256,7 @@ defineExpose({ openModal });
 .shortcuts-hint {
   margin: 1.2vh 0 0;
   opacity: 0.55;
-  font-size: 1.05vh;
+  font-size: calc(1.05vh * var(--ui-font-scale, 1));
   line-height: 1.4;
 }
 .shortcuts-actions {
@@ -269,7 +269,7 @@ defineExpose({ openModal });
 }
 .shortcuts-btn {
   font-family: inherit;
-  font-size: 1.3vh;
+  font-size: calc(1.3vh * var(--ui-font-scale, 1));
   padding: 0.6vh 1.2vh;
   cursor: pointer;
   text-transform: uppercase;

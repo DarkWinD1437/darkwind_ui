@@ -126,7 +126,9 @@ onMounted(() => {
    que se ve, el arranque hace el camino inverso. */
 .shutdown-title {
   font-family: var(--font_main);
-  font-size: 8vh;
+  /* Fijo a 120%, igual que .boot-title en BootSequence.vue — es el mismo logo, sin
+     relación con "Tamaño de letra general" de Ajustes. */
+  font-size: calc(8vh * 1.2);
   text-align: center;
   border: 0.46vh solid rgb(var(--color_r), var(--color_g), var(--color_b));
   padding: 2vh 2vh 1.6vh;
@@ -195,7 +197,8 @@ onMounted(() => {
 
 .shutdown-log {
   font-family: var(--font_mono), monospace;
-  font-size: 1.3vh;
+  /* Fijo a 120%, igual que el log de arranque en BootSequence.vue. */
+  font-size: calc(1.3vh * 1.2);
   text-align: center;
   min-height: 7vh;
 }

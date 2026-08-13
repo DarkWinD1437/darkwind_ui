@@ -55,7 +55,7 @@ const ICON: Record<string, string> = {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.3vh;
+  font-size: calc(1.3vh * var(--ui-font-scale, 1));
   border: 0.09vh solid currentColor;
 }
 .alert-icon-error {
@@ -81,7 +81,7 @@ const ICON: Record<string, string> = {
 }
 .alert-btn {
   font-family: inherit;
-  font-size: 1.3vh;
+  font-size: calc(1.3vh * var(--ui-font-scale, 1));
   padding: 0.6vh 1.2vh;
   cursor: pointer;
   text-transform: uppercase;

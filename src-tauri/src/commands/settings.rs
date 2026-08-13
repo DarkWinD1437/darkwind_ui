@@ -22,6 +22,10 @@ fn default_term_font_size() -> u32 {
     15
 }
 
+fn default_ui_scale() -> f32 {
+    1.0
+}
+
 fn default_audio_volume() -> f32 {
     1.0
 }
@@ -69,6 +73,10 @@ pub struct Settings {
     // manual explícito elegido en SettingsModal, que ya no se vuelve a autodetectar.
     #[serde(default = "default_language")]
     pub language: String,
+    #[serde(default = "default_ui_scale")]
+    pub ui_scale: f32,
+    #[serde(default = "default_true")]
+    pub virtual_keyboard: bool,
     #[serde(default = "default_term_font_size")]
     pub term_font_size: u32,
     #[serde(default = "default_true")]
@@ -89,8 +97,6 @@ pub struct Settings {
     pub nocursor: bool,
     #[serde(default = "default_true")]
     pub force_fullscreen: bool,
-    #[serde(default)]
-    pub allow_windowed: bool,
     #[serde(default = "default_true")]
     pub exclude_threads_from_toplist: bool,
     #[serde(default)]
@@ -112,6 +118,8 @@ impl Default for Settings {
             keyboard: default_keyboard(),
             theme: default_theme(),
             language: default_language(),
+            ui_scale: default_ui_scale(),
+            virtual_keyboard: true,
             term_font_size: default_term_font_size(),
             audio: true,
             audio_volume: default_audio_volume(),
@@ -122,7 +130,6 @@ impl Default for Settings {
             nointro: false,
             nocursor: false,
             force_fullscreen: true,
-            allow_windowed: false,
             exclude_threads_from_toplist: true,
             hide_dotfiles: false,
             fs_list_view: false,
@@ -237,6 +244,8 @@ mod tests {
         }"#;
         let settings: Settings = serde_json::from_str(old_json).expect("debe deserializar");
         assert_eq!(settings.language, "auto");
+        assert_eq!(settings.ui_scale, 1.0);
+        assert!(settings.virtual_keyboard);
     }
 
     // La terminal arrancaba en la carpeta del propio proceso de la app cuando cwd

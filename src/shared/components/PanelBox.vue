@@ -74,7 +74,7 @@ const expanded = ref(false);
 
 .panel-box-title {
   margin: 0 0 0.4vh 0;
-  font-size: 0.85vh;
+  font-size: calc(0.85vh * var(--ui-font-scale, 1));
   font-weight: normal;
   letter-spacing: 0.05vh;
   opacity: 0.75;
@@ -94,7 +94,7 @@ const expanded = ref(false);
 }
 
 .panel-box-body {
-  font-size: 0.85vh;
+  font-size: calc(0.85vh * var(--ui-font-scale, 1));
 }
 
 .panel-box-inline {
@@ -155,7 +155,7 @@ const expanded = ref(false);
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1.2vh;
-  font-size: 1.7vh;
+  font-size: calc(1.7vh * var(--ui-font-scale, 1));
   text-transform: uppercase;
   border-bottom: 0.09vh solid rgba(var(--color_r), var(--color_g), var(--color_b), 0.3);
   padding-bottom: 0.6vh;
@@ -165,9 +165,9 @@ const expanded = ref(false);
   border: none;
   color: inherit;
   cursor: pointer;
-  font-size: 1.3vh;
+  font-size: calc(1.3vh * var(--ui-font-scale, 1));
 }
 .panel-box-body-expanded {
-  font-size: 2.2vh;
+  font-size: calc(2.2vh * var(--ui-font-scale, 1));
 }
 </style>

@@ -150,7 +150,7 @@ onBeforeUnmount(() => {
   border: 0.09vh solid rgba(var(--color_r), var(--color_g), var(--color_b), 0.5);
   color: inherit;
   font-family: var(--font_mono), monospace;
-  font-size: 1vh;
+  font-size: calc(1vh * var(--ui-font-scale, 1));
   padding: 0.6vh;
   outline: none;
 }
@@ -161,7 +161,7 @@ onBeforeUnmount(() => {
   list-style: none;
   margin: 0.6vh 0 0;
   padding: 0;
-  font-size: 0.95vh;
+  font-size: calc(0.95vh * var(--ui-font-scale, 1));
 }
 .fuzzy-results li {
   padding: 0.4vh 0.6vh;

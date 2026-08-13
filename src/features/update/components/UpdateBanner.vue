@@ -122,7 +122,7 @@ function cancel(): void {
   max-width: 70vw;
   background: var(--color_light_black);
   color: rgb(var(--color_r), var(--color_g), var(--color_b));
-  font-size: 1.2vh;
+  font-size: calc(1.2vh * var(--ui-font-scale, 1));
 
   --aug-border-all: 0.18vh;
   --aug-border-bg: rgb(var(--color_r), var(--color_g), var(--color_b));
@@ -148,7 +148,7 @@ function cancel(): void {
 
 .update-btn {
   font-family: inherit;
-  font-size: 1.1vh;
+  font-size: calc(1.1vh * var(--ui-font-scale, 1));
   padding: 0.5vh 1vh;
   cursor: pointer;
   text-transform: uppercase;

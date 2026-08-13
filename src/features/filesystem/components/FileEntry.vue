@@ -57,7 +57,7 @@ const emit = defineEmits<{ activate: [] }>();
   flex: none;
 }
 .file-entry-name {
-  font-size: 0.85vh;
+  font-size: calc(0.85vh * var(--ui-font-scale, 1));
   text-align: center;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -82,17 +82,17 @@ const emit = defineEmits<{ activate: [] }>();
   /* En grilla el nombre queda debajo del ícono grande, así que 0.85vh se lee bien; en
      lista es la única referencia visual de tamaño en una fila angosta y se sentía
      "ultra chico" — se agranda para que sea cómodo de leer en una sola línea. */
-  font-size: 1.05vh;
+  font-size: calc(1.05vh * var(--ui-font-scale, 1));
 }
 .file-entry.list-view .file-entry-size {
   width: 15%;
-  font-size: 0.95vh;
+  font-size: calc(0.95vh * var(--ui-font-scale, 1));
   opacity: 0.6;
   text-align: right;
 }
 .file-entry.list-view .file-entry-date {
   width: 30%;
-  font-size: 0.95vh;
+  font-size: calc(0.95vh * var(--ui-font-scale, 1));
   opacity: 0.6;
   text-align: right;
 }

@@ -328,7 +328,7 @@ onBeforeUnmount(() => {
 .keyboard_key h1 {
   margin: 0;
   padding: 0;
-  font-size: 1.85vh;
+  font-size: calc(1.85vh * var(--ui-font-scale, 1));
   font-weight: normal;
 }
 .keyboard_key h2,
@@ -337,7 +337,7 @@ onBeforeUnmount(() => {
   margin: 0;
   padding: 0;
   position: absolute;
-  font-size: 1.1vh;
+  font-size: calc(1.1vh * var(--ui-font-scale, 1));
   opacity: 0.65;
   font-weight: normal;
 }

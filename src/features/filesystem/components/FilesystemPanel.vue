@@ -234,7 +234,7 @@ onBeforeUnmount(() => {
   border: 0.09vh solid rgba(var(--color_r), var(--color_g), var(--color_b), 0.4);
   color: rgb(var(--color_r), var(--color_g), var(--color_b));
   cursor: pointer;
-  font-size: 1vh;
+  font-size: calc(1vh * var(--ui-font-scale, 1));
   padding: 0.2vh 0.5vh;
   line-height: 1.4;
 }
@@ -258,7 +258,7 @@ onBeforeUnmount(() => {
 }
 .fs-path {
   flex: 1;
-  font-size: 0.95vh;
+  font-size: calc(0.95vh * var(--ui-font-scale, 1));
   opacity: 0.75;
   overflow: hidden;
   white-space: nowrap;
@@ -300,7 +300,7 @@ onBeforeUnmount(() => {
 .fs-empty {
   grid-column: 1 / -1;
   opacity: 0.5;
-  font-size: 0.9vh;
+  font-size: calc(0.9vh * var(--ui-font-scale, 1));
   padding: 1vh 0;
   text-align: center;
 }
@@ -311,7 +311,7 @@ onBeforeUnmount(() => {
 .fs-loading {
   grid-column: 1 / -1;
   opacity: 0.5;
-  font-size: 0.9vh;
+  font-size: calc(0.9vh * var(--ui-font-scale, 1));
   padding: 1vh 0;
   text-align: center;
   animation: fs-loading-pulse 1.2s ease-in-out infinite;

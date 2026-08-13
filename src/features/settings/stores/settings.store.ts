@@ -1,9 +1,11 @@
 import { defineStore } from "pinia";
+import { getCurrentWindow } from "@tauri-apps/api/window";
 import { readSettings, writeSettings } from "@/core/persistence/settingsRepository";
 import type { Settings } from "@/core/persistence/types";
 import { audioManager } from "@/core/audio/audioManager";
 import { resolveLocale, setLocale } from "@/core/i18n/i18n";
 import { useThemesStore } from "@/core/theme/stores/themes.store";
+import { applyUiScale } from "@/core/theme/themeEngine";
 import { useKeyboardStore } from "@/features/keyboard/stores/keyboard.store";
 
 // Primer store que envuelve settings_read/settings_write de forma centralizada — hasta
@@ -39,6 +41,15 @@ export const useSettingsStore = defineStore("settings", {
       }
       if (patch.keyboard !== undefined) {
         tasks.push(useKeyboardStore().applyLayoutById(next.keyboard));
+      }
+      if (patch.uiScale !== undefined) {
+        applyUiScale(next.uiScale);
+      }
+      if (patch.forceFullscreen !== undefined) {
+        // Antes, tildar/destildar el checkbox de fullscreen en Settings no hacía nada
+        // hasta reiniciar la app (App.vue solo lee forceFullscreen una vez, al arrancar)
+        // — se aplica acá en caliente, igual que tema/idioma/audio.
+        tasks.push(getCurrentWindow().setFullscreen(next.forceFullscreen));
       }
       if (patch.language !== undefined) {
         tasks.push(resolveLocale(next.language).then(setLocale));

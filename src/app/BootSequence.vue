@@ -149,7 +149,10 @@ section#boot_screen {
      ej. Fira Mono) — el log de arranque quedaba con una tipografía distinta al resto de
      la app en modo monoespaciado (terminal, reloj). */
   font-family: var(--font_mono), monospace;
-  font-size: 1.4vh;
+  /* Fijo a 120% del tamaño base, SIN relación con "Tamaño de letra general" de
+     Ajustes — el log de arranque y el logo de abajo son decorativos/de branding, no
+     contenido que deba agrandarse o achicarse con la preferencia del usuario. */
+  font-size: calc(1.4vh * 1.2);
   text-align: left;
   display: flex;
   align-items: flex-end;
@@ -164,7 +167,7 @@ section#boot_screen.center {
 
 .boot-title {
   font-family: var(--font_main);
-  font-size: 10vh;
+  font-size: calc(10vh * 1.2);
   text-align: center;
   border-bottom: 0.46vh solid rgb(var(--color_r), var(--color_g), var(--color_b));
   padding-top: 2vh;

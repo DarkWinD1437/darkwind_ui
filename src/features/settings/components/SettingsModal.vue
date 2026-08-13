@@ -22,6 +22,8 @@ const draft = reactive<Settings>({
   keyboard: "en-US",
   theme: "tron",
   language: "auto",
+  uiScale: 1,
+  virtualKeyboard: true,
   termFontSize: 15,
   audio: true,
   audioVolume: 1,
@@ -32,7 +34,6 @@ const draft = reactive<Settings>({
   nointro: false,
   nocursor: false,
   forceFullscreen: true,
-  allowWindowed: false,
   excludeThreadsFromToplist: true,
   hideDotfiles: false,
   fsListView: false,
@@ -87,6 +88,10 @@ defineExpose({ openModal });
             <option v-for="id in keyboardStore.available" :key="id" :value="id">{{ id }}</option>
           </select>
         </label>
+        <label class="settings-field settings-field-check">
+          <input v-model="draft.virtualKeyboard" type="checkbox" />
+          <span>{{ t("settings.virtualKeyboard") }}</span>
+        </label>
         <label class="settings-field">
           <span>{{ t("settings.language") }}</span>
           <select v-model="draft.language">
@@ -94,6 +99,10 @@ defineExpose({ openModal });
             <option value="es">Español</option>
             <option value="en">English</option>
           </select>
+        </label>
+        <label class="settings-field">
+          <span>{{ t("settings.uiScale") }} ({{ Math.round(draft.uiScale * 100) }}%)</span>
+          <input v-model.number="draft.uiScale" type="range" min="0.85" max="1.4" step="0.05" />
         </label>
         <label class="settings-field">
           <span>{{ t("settings.termFontSize") }}</span>
@@ -146,13 +155,12 @@ defineExpose({ openModal });
 
       <section class="settings-section">
         <h5>{{ t("settings.behavior") }}</h5>
-        <label class="settings-field settings-field-check">
-          <input v-model="draft.forceFullscreen" type="checkbox" />
-          <span>{{ t("settings.forceFullscreen") }}</span>
-        </label>
-        <label class="settings-field settings-field-check">
-          <input v-model="draft.allowWindowed" type="checkbox" />
-          <span>{{ t("settings.allowWindowed") }}</span>
+        <label class="settings-field">
+          <span>{{ t("settings.windowMode") }}</span>
+          <select v-model="draft.forceFullscreen">
+            <option :value="true">{{ t("settings.windowModeFullscreen") }}</option>
+            <option :value="false">{{ t("settings.windowModeWindowed") }}</option>
+          </select>
         </label>
         <label class="settings-field settings-field-check">
           <input v-model="draft.nointro" type="checkbox" />
@@ -208,7 +216,7 @@ defineExpose({ openModal });
 }
 .settings-section h5 {
   margin: 0 0 0.8vh;
-  font-size: 1.3vh;
+  font-size: calc(1.3vh * var(--ui-font-scale, 1));
   text-transform: uppercase;
   letter-spacing: 0.05vh;
   opacity: 0.7;
@@ -220,7 +228,7 @@ defineExpose({ openModal });
   flex-direction: column;
   gap: 0.25vh;
   margin-bottom: 0.9vh;
-  font-size: 1.4vh;
+  font-size: calc(1.4vh * var(--ui-font-scale, 1));
 }
 .settings-field-check {
   flex-direction: row;
@@ -234,7 +242,7 @@ defineExpose({ openModal });
   border: 0.09vh solid rgba(var(--color_r), var(--color_g), var(--color_b), 0.4);
   color: inherit;
   font-family: inherit;
-  font-size: 1.4vh;
+  font-size: calc(1.4vh * var(--ui-font-scale, 1));
   padding: 0.5vh 0.6vh;
 }
 /* Sin esto, el popup nativo de <select> se dibujaba con fondo blanco (WebView2 no
@@ -276,7 +284,7 @@ defineExpose({ openModal });
 }
 .settings-btn {
   font-family: inherit;
-  font-size: 1.3vh;
+  font-size: calc(1.3vh * var(--ui-font-scale, 1));
   padding: 0.6vh 1.2vh;
   cursor: pointer;
   text-transform: uppercase;

@@ -47,7 +47,7 @@ onBeforeUnmount(() => {
 
 <style scoped>
 .clock-time {
-  font-size: 1.9vh;
+  font-size: calc(1.9vh * var(--ui-font-scale, 1));
   font-family: var(--font_mono), monospace;
   line-height: 1.1;
 }

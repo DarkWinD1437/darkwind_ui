@@ -3,9 +3,11 @@ import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 import PanelBox from "@/shared/components/PanelBox.vue";
 import { useSysinfoStore } from "../stores/sysinfo.store";
+import { useSettingsStore } from "@/features/settings/stores/settings.store";
 
 const { t } = useI18n();
 const store = useSysinfoStore();
+const settingsStore = useSettingsStore();
 
 const location = computed(() => {
   const geo = store.externalIpGeo;
@@ -27,10 +29,17 @@ const localIface = computed(() => {
   return null;
 });
 
-// Compacto: 3 líneas para no invadir el espacio del teclado debajo de esta columna.
-// Expandido (modal de PanelBox): la lista completa, sin recorte.
+// Compacto: 3 líneas (a escala de letra 100%) para no invadir el espacio del teclado
+// debajo de esta columna. Con "Tamaño de letra general" de Ajustes por encima de
+// 100% cada línea mide más alto, así que la cantidad se recalcula en proporción
+// inversa a la escala para seguir sin desbordar. Expandido (modal de PanelBox): la
+// lista completa, sin recorte.
+const visibleConnCount = computed(() => {
+  const scale = settingsStore.current?.uiScale ?? 1;
+  return Math.max(1, Math.floor(3 / scale));
+});
 function visibleConnections(expanded: boolean) {
-  return expanded ? store.netConnections : store.netConnections.slice(0, 3);
+  return expanded ? store.netConnections : store.netConnections.slice(0, visibleConnCount.value);
 }
 </script>
 
@@ -80,8 +89,11 @@ function visibleConnections(expanded: boolean) {
     <div v-if="store.netConnections.length === 0" class="net-conn-empty">
       {{ t("panels.netstat.noConnections") }}
     </div>
-    <div v-else-if="!expanded && store.netConnections.length > 3" class="net-conn-more-hint">
-      {{ t("panels.netstat.moreHint", { count: store.netConnections.length - 3 }) }}
+    <div
+      v-else-if="!expanded && store.netConnections.length > visibleConnCount"
+      class="net-conn-more-hint"
+    >
+      {{ t("panels.netstat.moreHint", { count: store.netConnections.length - visibleConnCount }) }}
     </div>
   </PanelBox>
 </template>

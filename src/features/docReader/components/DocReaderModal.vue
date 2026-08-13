@@ -121,7 +121,7 @@ onBeforeUnmount(disposeDocument);
   border: 0.09vh solid rgba(var(--color_r), var(--color_g), var(--color_b), 0.4);
   color: inherit;
   cursor: pointer;
-  font-size: 1.3vh;
+  font-size: calc(1.3vh * var(--ui-font-scale, 1));
   padding: 0.3vh 0.8vh;
 }
 .doc-toolbar button:disabled {
@@ -129,7 +129,7 @@ onBeforeUnmount(disposeDocument);
   cursor: default;
 }
 .doc-page-indicator {
-  font-size: 1.2vh;
+  font-size: calc(1.2vh * var(--ui-font-scale, 1));
   opacity: 0.85;
   white-space: nowrap;
 }
@@ -153,6 +153,6 @@ onBeforeUnmount(disposeDocument);
 }
 .doc-message {
   opacity: 0.6;
-  font-size: 1.2vh;
+  font-size: calc(1.2vh * var(--ui-font-scale, 1));
 }
 </style>

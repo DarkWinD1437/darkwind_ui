@@ -4,11 +4,22 @@ import { useI18n } from "vue-i18n";
 import PanelBox from "@/shared/components/PanelBox.vue";
 import { formatMemoryBytes } from "@/shared/utils/formatBytes";
 import { useSysinfoStore } from "../stores/sysinfo.store";
+import { useSettingsStore } from "@/features/settings/stores/settings.store";
 
 const { t } = useI18n();
 const store = useSysinfoStore();
+const settingsStore = useSettingsStore();
 
-const topFive = computed(() => store.processes.slice(0, 5));
+// El "5" original estaba calibrado para la altura de esta columna con el tamaño de
+// letra por defecto — con "Tamaño de letra general" de Ajustes por encima de 100%,
+// cada fila mide más alto y 5 filas fijas empezaban a desbordar hacia los paneles de
+// abajo (Tráfico de red). Se recalcula en proporción inversa a la escala para seguir
+// cabiendo en vez de invadir el resto de la columna.
+const visibleCount = computed(() => {
+  const scale = settingsStore.current?.uiScale ?? 1;
+  return Math.max(2, Math.floor(5 / scale));
+});
+const visibleProcesses = computed(() => store.processes.slice(0, visibleCount.value));
 </script>
 
 <template>
@@ -41,7 +52,7 @@ const topFive = computed(() => store.processes.slice(0, 5));
       </table>
     </template>
     <template v-else>
-      <div v-for="proc in topFive" :key="proc.pid" class="proc-line">
+      <div v-for="proc in visibleProcesses" :key="proc.pid" class="proc-line">
         <span class="proc-name">{{ proc.name }}</span>
         <span class="proc-cpu">{{ Math.round(proc.cpuUsage) }}%</span>
       </div>

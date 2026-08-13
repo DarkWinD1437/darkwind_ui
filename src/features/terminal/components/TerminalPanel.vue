@@ -248,7 +248,7 @@ ul.terminal-tabs > li.terminal-tab-add {
 }
 
 .terminal-cwd {
-  font-size: 0.9vh;
+  font-size: calc(0.9vh * var(--ui-font-scale, 1));
   opacity: 0.6;
   padding: 0.2vh 0;
   white-space: nowrap;

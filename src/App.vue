@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
 import { useThemesStore } from "@/core/theme/stores/themes.store";
+import { applyUiScale } from "@/core/theme/themeEngine";
 import { audioManager } from "@/core/audio/audioManager";
 import { resolveLocale, setLocale } from "@/core/i18n/i18n";
 import { useSettingsStore } from "@/features/settings/stores/settings.store";
@@ -21,12 +22,11 @@ onMounted(async () => {
   // anterior DESPUÉS de que la ventana ya se creó — puede pisar el
   // "fullscreen": true de tauri.conf.json con lo último que haya quedado guardado
   // (ej. si alguna vez terminó en modo ventana por cualquier motivo). Esto reafirma
-  // en cada arranque el estado que pide Settings.forceFullscreen, sin depender de lo
-  // que el plugin haya restaurado.
-  if (settings.forceFullscreen) {
-    await viewport.setFullscreen(true).catch(() => {});
-  }
+  // en cada arranque el modo que pide Settings.forceFullscreen (en ambos sentidos,
+  // no solo cuando es true) sin depender de lo que el plugin haya restaurado.
+  await viewport.setFullscreen(settings.forceFullscreen).catch(() => {});
   await themesStore.applyThemeById(settings.theme);
+  applyUiScale(settings.uiScale);
   setLocale(await resolveLocale(settings.language));
   // El original nunca reconfigura su equivalente de AudioManager según lo guardado en
   // settings.json (queda en los defaults del constructor hasta reiniciar) — acá sí se

@@ -64,3 +64,21 @@ export async function applyTheme(theme: DarkwindTheme): Promise<void> {
   `;
   document.head.appendChild(style);
 }
+
+const UI_SCALE_MIN = 0.85;
+const UI_SCALE_MAX = 1.4;
+
+// Probado primero con `zoom` en :root (recalcula el viewport completo, como el zoom
+// nativo del navegador) — se descartó porque AppShell tiene varios `h3.title` en
+// position:fixed dentro del árbol zoomeado (ver comentario sobre augmented-ui +
+// fixed en themeRepository/AppShell), y el motor Chromium de WebView2 no reposiciona
+// esos fixed en sincronía con el resto: a partir de ~110% el layout se desarmaba
+// (columnas y paneles quedaban desalineados en vez de crecer juntos). En su lugar,
+// cada `font-size: Xvh` explícito del proyecto quedó envuelto en
+// `calc(Xvh * var(--ui-font-scale, 1))` — solo el tamaño del texto cambia, nunca el
+// tamaño ni la posición de las cajas que lo contienen, así que el layout general
+// (grillas, position:fixed/absolute, animaciones) es imposible que se rompa por esto.
+export function applyUiScale(scale: number): void {
+  const clamped = Math.min(UI_SCALE_MAX, Math.max(UI_SCALE_MIN, scale));
+  document.documentElement.style.setProperty("--ui-font-scale", String(clamped));
+}
