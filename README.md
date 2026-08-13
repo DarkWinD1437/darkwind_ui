@@ -4,14 +4,13 @@ Terminal de escritorio con estética cyberpunk, construido desde cero con **Vue 
 
 darkwind_ui es un entorno de escritorio kiosco (fullscreen) que combina una terminal real (PowerShell u otro shell, con PTY nativo), paneles de monitoreo del sistema en vivo, un explorador de archivos, un teclado táctil y un globo 3D de conexiones de red, todo bajo una estética retro-hacker inspirada en la interfaz de ciencia ficción de películas como *Matrix* o *Tron*. Está pensado para correr en una pantalla dedicada (un segundo monitor, una tablet, una Raspberry Pi con pantalla) tanto como para uso diario en el escritorio de Windows.
 
-✅ **Proyecto completo.** Las piezas núcleo (terminal, theming, layout, paneles de sistema, explorador de archivos, teclado, animaciones de arranque/cierre) están operativas y con paridad funcional respecto al proyecto original que sirvió de inspiración, además de varias mejoras propias. El empaquetado en instalador de Windows, el endurecimiento de permisos/seguridad, la auto-actualización y la verificación end-to-end también están cerrados. La única limitación de alcance es intencional: **esta versión es exclusivamente para Windows**.
 
 ## Qué hace, panel por panel
 
 - **Terminal** (centro): shell real corriendo en un proceso PTY nativo (no una simulación) — todo lo que se tipea llega de verdad al sistema operativo. Soporta hasta 5 pestañas simultáneas, búsqueda en el scrollback, copiar/pegar con el portapapeles de Windows, y muestra el directorio de trabajo y el nombre del proceso activo en tiempo real.
 - **Columna izquierda** (sistema): reloj, información de SO/host, CPU (uso global y por núcleo, frecuencia, temperatura si el hardware la expone), memoria (RAM + swap), GPU (uso/VRAM/temperatura, con soporte NVIDIA/AMD/Intel), discos, batería y el top de procesos por consumo — todo con datos reales, actualizados por polling.
 - **Columna derecha** (red): IP externa + ubicación geográfica + proveedor de internet, IPs locales por interfaz, tráfico de red, tabla de conexiones TCP activas (con el proceso dueño de cada una), y un globo 3D navegable que puede trazar arcos animados hacia cada conexión activa.
-- **Franja inferior**: un explorador de archivos con vista de íconos o lista, y un teclado táctil en pantalla con 19 layouts de idioma y soporte de diacríticos (dead-keys).
+- **Franja inferior**: un explorador de archivos con vista de íconos o lista, y un teclado táctil en pantalla con 19 layouts de idioma y soporte de diacríticos (dead-keys) — opcional, se puede ocultar desde Settings y el explorador crece solo para ocupar el espacio libre.
 - **Modales**: editor de configuración (Settings), editor de atajos de teclado, visor de PDF, reproductor de audio/video, buscador difuso de archivos y ayuda de atajos — todos con la misma estética que el resto de la app, en vez de delegar a programas externos de Windows.
 
 ## Características completas
@@ -30,6 +29,9 @@ darkwind_ui es un entorno de escritorio kiosco (fullscreen) que combina una term
 - Temas personalizables (JSON + variables CSS)
 - Sistema de modales genérico (apilado real por z-index, arrastrables, Escape cierra solo el que está arriba), con soporte para diálogos de error/warning/info/confirmación
 - Editor de configuración (Settings) con todos los campos persistentes agrupados por sección (apariencia, audio, terminal y red, comportamiento, experimental)
+- Tamaño de letra general ajustable (85%–140%) desde Settings: escala el texto de toda la interfaz sin romper el layout de paneles/modales (el logo de arranque/cierre y su log quedan fijos a 120%, no siguen esta escala)
+- Teclado táctil opcional: se puede ocultar por completo desde Settings — el explorador de archivos se expande solo para aprovechar el espacio libre cuando está oculto
+- Selector de modo de ventana (pantalla completa / ventana) que aplica el cambio al instante, sin reiniciar la app
 - Editor de atajos de teclado con alta/baja/reasignación en vivo (click en la combinación y presionás la tecla nueva)
 - Visor de PDF y reproductor de audio/video integrados: al abrir un archivo compatible desde el explorador se abre en un modal propio en vez de siempre delegar a una app externa del sistema. El video tiene pantalla completa propia y el menú de controles se oculta solo tras unos segundos de inactividad
 - Interfaz traducible español/inglés, con detección automática del idioma del sistema operativo al primer arranque y override manual en Settings
@@ -57,7 +59,7 @@ darkwind_ui es un entorno de escritorio kiosco (fullscreen) que combina una term
 
 ### Primeros pasos
 
-- La app arranca **en pantalla completa** por defecto (comportamiento "kiosco"). Para salir: el botón **⏻** junto a los íconos de Settings/Shortcuts en el explorador de archivos, o el atajo `Ctrl+Shift+Q` — ambos disparan la animación de cierre y terminan las sesiones de terminal abiertas de forma prolija.
+- La app arranca **en pantalla completa** por defecto (comportamiento "kiosco"); se puede cambiar a modo ventana desde **Settings**. Para salir: el botón **⏻** junto a los íconos de Settings/Shortcuts en el explorador de archivos, o el atajo `Ctrl+Shift+Q` — ambos disparan la animación de cierre y terminan las sesiones de terminal abiertas de forma prolija.
 - El shell por defecto es PowerShell; se puede cambiar (junto con el tema, el idioma, el layout de teclado y más) desde **Settings** (`Ctrl+Shift+S`, o el ícono ⚙ en el explorador).
 - El idioma de la interfaz se detecta solo a partir del idioma configurado en Windows; se puede forzar español o inglés manualmente desde Settings.
 - Para ver o editar cualquier atajo de teclado: **Shortcuts** (`Ctrl+Shift+K`, o el ícono ⌨ en el explorador).
