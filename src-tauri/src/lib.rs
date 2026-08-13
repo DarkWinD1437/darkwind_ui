@@ -24,7 +24,25 @@ pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_clipboard_manager::init())
-        .plugin(tauri_plugin_window_state::Builder::default().build())
+        // Por defecto este plugin persiste y restaura TODO, incluidos fullscreen y
+        // decorations — eso competía con la reafirmación propia de
+        // Settings.forceFullscreen que hace App.vue en cada arranque (después de que
+        // la ventana ya se creó), y una combinación inconsistente guardada de una
+        // sesión anterior (ej. tamaño chico + decorated:false de un momento en
+        // fullscreen, pero el fullscreen real sin llegar a aplicarse a tiempo) podía
+        // dejar la ventana en un estado roto: chica y sin botones de la barra de
+        // título. Excluir esas dos flags deja a Settings.forceFullscreen como única
+        // fuente de verdad; el plugin solo se encarga de tamaño/posición/maximizado,
+        // útil en modo ventana.
+        .plugin(
+            tauri_plugin_window_state::Builder::default()
+                .with_state_flags(
+                    tauri_plugin_window_state::StateFlags::all()
+                        - tauri_plugin_window_state::StateFlags::FULLSCREEN
+                        - tauri_plugin_window_state::StateFlags::DECORATIONS,
+                )
+                .build(),
+        )
         .plugin(tauri_plugin_os::init())
         .plugin(tauri_plugin_process::init())
         .plugin(tauri_plugin_updater::Builder::new().build())
