@@ -1,2 +1,9 @@
 allowBuilds:
   esbuild: false
+
+overrides:
+  # nanoid 4+ es ESM-only — postcss (CJS) hace require("nanoid") y con un ">=3.3.18"
+  # sin techo pnpm resolvía nanoid 6.x, rompiendo ese require en tiempo de build. El
+  # caret lo mantiene en 3.x (el mismo rango que postcss ya declara, ^3.3.16) con el
+  # parche de seguridad aplicado.
+  nanoid: "^3.3.18"
