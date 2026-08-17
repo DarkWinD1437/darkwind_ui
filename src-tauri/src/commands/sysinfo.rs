@@ -121,13 +121,21 @@ pub fn sysinfo_processes(state: State<SysinfoState>, limit: usize) -> Vec<Proces
     let mut system = state.0.lock().unwrap();
     system.refresh_processes(ProcessesToUpdate::All, true);
 
+    // sysinfo::Process::cpu_usage() da el uso crudo (100% = un núcleo entero saturado),
+    // así que un proceso multi-hilo real puede reportar más de 100% en una máquina
+    // multi-núcleo — el Administrador de Tareas de Windows en cambio normaliza contra
+    // la capacidad TOTAL del sistema (0-100%), por eso los mismos procesos se veían con
+    // números muy distintos entre ambos. Se divide acá por la cantidad de núcleos
+    // lógicos para que el panel de Procesos calce con lo que Windows ya muestra.
+    let core_count = system.cpus().len().max(1) as f32;
+
     let mut processes: Vec<ProcessInfo> = system
         .processes()
         .values()
         .map(|p| ProcessInfo {
             pid: p.pid().as_u32(),
             name: p.name().to_string_lossy().into_owned(),
-            cpu_usage: p.cpu_usage(),
+            cpu_usage: p.cpu_usage() / core_count,
             memory: p.memory(),
             exe: p.exe().map(|path| path.to_string_lossy().into_owned()),
             cmd: p

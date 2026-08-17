@@ -45,12 +45,29 @@ pub fn pty_spawn(
     let writer = pair.master.take_writer().map_err(|e| e.to_string())?;
 
     let id = Uuid::new_v4().to_string();
+    let reader_id = id.clone();
 
     std::thread::spawn(move || {
+        let id = reader_id;
+        // El Channel de Tauri (@tauri-apps/api core.js, clase Channel) entrega los
+        // mensajes en orden estricto por índice: si el mensaje 0 se pierde, cualquier
+        // mensaje posterior queda atascado en un buffer para siempre esperándolo —
+        // nunca se dispara `onmessage`, sin ningún error visible. ConPTY manda su
+        // consulta de posición del cursor (ESC[6n) apenas arranca el shell, tan rápido
+        // que puede ganarle a que el lado nativo de Tauri termine de registrar este
+        // canal — cuando eso pasaba, ese primer paquete se perdía y la terminal
+        // quedaba congelada en blanco para siempre (el shell nunca recibe la
+        // respuesta a esa consulta y se queda esperando antes de imprimir nada más).
+        // Este respiro le da tiempo al registro del canal a asentarse antes de que
+        // el primer byte salga.
+        std::thread::sleep(std::time::Duration::from_millis(100));
         let mut buf = [0u8; 8192];
         loop {
             match reader.read(&mut buf) {
-                Ok(0) => break,
+                Ok(0) => {
+                    log::info!("pty_spawn[{id}]: lectura devolvió EOF (Ok(0)), termina el hilo lector");
+                    break;
+                }
                 Ok(n) => {
                     // Un solo envío fallido no significa que el canal esté muerto para
                     // siempre — puede ser un hueco transitorio justo después del spawn,
@@ -62,10 +79,13 @@ pub fn pty_spawn(
                     // después — solo se corta cuando el PTY realmente termina (Ok(0))
                     // o falla la lectura misma.
                     if on_data.send(buf[..n].to_vec()).is_err() {
-                        log::warn!("pty_spawn: falló un envío de datos por el canal, se reintenta con el próximo chunk");
+                        log::warn!("pty_spawn[{id}]: falló un envío de datos por el canal, se reintenta con el próximo chunk");
                     }
                 }
-                Err(_) => break,
+                Err(e) => {
+                    log::error!("pty_spawn[{id}]: la lectura del PTY falló, termina el hilo lector: {e}");
+                    break;
+                }
             }
         }
     });
@@ -85,6 +105,10 @@ pub fn pty_spawn(
 #[tauri::command]
 pub fn pty_write(state: State<PtyState>, id: String, data: String) -> Result<(), String> {
     let mut sessions = state.0.lock().unwrap();
+    if !sessions.contains_key(&id) {
+        let live: Vec<_> = sessions.keys().cloned().collect();
+        log::error!("pty_write[{id}]: no se encontró la sesión (ids vivas: {live:?})");
+    }
     let session = sessions.get_mut(&id).ok_or("pty session not found")?;
     session
         .writer
