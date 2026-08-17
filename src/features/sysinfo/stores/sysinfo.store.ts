@@ -38,6 +38,7 @@ export const useSysinfoStore = defineStore("sysinfo", {
     externalIpGeo: null as client.GeoRecord | null,
     externalIpAsn: null as client.AsnRecord | null,
     pingMs: null as number | null,
+    pingAddr: "1.1.1.1",
     fastTimer: null as ReturnType<typeof setInterval> | null,
     slowTimer: null as ReturnType<typeof setInterval> | null,
     prevNetTotals: null as NetSample | null,
@@ -135,26 +136,36 @@ export const useSysinfoStore = defineStore("sysinfo", {
       }
     },
 
-    async refreshPing(addr: string): Promise<void> {
+    async refreshPing(): Promise<void> {
       try {
-        this.pingMs = await client.tcpPing(addr, 443);
+        this.pingMs = await client.tcpPing(this.pingAddr, 443);
       } catch {
         this.pingMs = null;
       }
     },
 
+    // Separado de start(): antes pingAddr solo se leía una vez al arrancar y quedaba
+    // capturado por closure dentro de los setInterval — cambiarlo en Settings después
+    // no tenía ningún efecto hasta reiniciar la app. Guardarlo en el estado del store
+    // deja que settings.store.ts lo actualice en caliente vía setPingAddr().
+    setPingAddr(addr: string): void {
+      this.pingAddr = addr;
+      void this.refreshPing();
+    },
+
     start(pingAddr = "1.1.1.1"): void {
       if (this.fastTimer) return;
+      this.pingAddr = pingAddr;
 
       void this.pollFast();
       void this.pollSlow();
       void this.refreshExternalIp();
-      void this.refreshPing(pingAddr);
+      void this.refreshPing();
 
       this.fastTimer = setInterval(() => void this.pollFast(), FAST_POLL_MS);
       this.slowTimer = setInterval(() => {
         void this.pollSlow();
-        void this.refreshPing(pingAddr);
+        void this.refreshPing();
       }, SLOW_POLL_MS);
     },
 

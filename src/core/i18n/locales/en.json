@@ -47,13 +47,10 @@
     "windowModeFullscreen": "Fullscreen (default)",
     "windowModeWindowed": "Windowed",
     "nointro": "Skip boot animation",
-    "nocursor": "Hide mouse cursor",
-    "excludeThreads": "Exclude threads from process list",
     "hideDotfiles": "Hide dotfiles by default",
     "fsListView": "Default to list view in file explorer",
     "experimental": "Experimental",
-    "experimentalGlobe": "Experimental 3D globe features",
-    "experimentalGeneral": "Experimental general features"
+    "experimentalGlobe": "Experimental 3D globe features"
   },
   "shortcuts": {
     "title": "Keyboard shortcuts",
@@ -196,7 +193,9 @@
     "line4": "See you next time."
   },
   "update": {
+    "title": "Update available",
     "available": "An update is available: v{version} (you have v{current})",
+    "notesTitle": "What's new in this version",
     "viewOnGithub": "View on GitHub",
     "updateNow": "Update now",
     "cancel": "Cancel",

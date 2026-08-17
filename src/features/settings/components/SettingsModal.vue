@@ -30,15 +30,11 @@ const draft = reactive<Settings>({
   disableFeedbackAudio: false,
   clockHours: 24,
   pingAddr: "1.1.1.1",
-  port: 3000,
   nointro: false,
-  nocursor: false,
   forceFullscreen: true,
-  excludeThreadsFromToplist: true,
   hideDotfiles: false,
   fsListView: false,
   experimentalGlobeFeatures: false,
-  experimentalFeatures: false,
 });
 
 async function openModal(): Promise<void> {
@@ -167,14 +163,6 @@ defineExpose({ openModal });
           <span>{{ t("settings.nointro") }}</span>
         </label>
         <label class="settings-field settings-field-check">
-          <input v-model="draft.nocursor" type="checkbox" />
-          <span>{{ t("settings.nocursor") }}</span>
-        </label>
-        <label class="settings-field settings-field-check">
-          <input v-model="draft.excludeThreadsFromToplist" type="checkbox" />
-          <span>{{ t("settings.excludeThreads") }}</span>
-        </label>
-        <label class="settings-field settings-field-check">
           <input v-model="draft.hideDotfiles" type="checkbox" />
           <span>{{ t("settings.hideDotfiles") }}</span>
         </label>
@@ -189,10 +177,6 @@ defineExpose({ openModal });
         <label class="settings-field settings-field-check">
           <input v-model="draft.experimentalGlobeFeatures" type="checkbox" />
           <span>{{ t("settings.experimentalGlobe") }}</span>
-        </label>
-        <label class="settings-field settings-field-check">
-          <input v-model="draft.experimentalFeatures" type="checkbox" />
-          <span>{{ t("settings.experimentalGeneral") }}</span>
         </label>
       </section>
     </div>

@@ -7,7 +7,7 @@ import { useFilesystemStore } from "../stores/filesystem.store";
 import { matchIcon } from "../fileIconsMatcher";
 import { fileOpenKind, resolveMatchedIcon, specialIcon } from "../icons";
 import { formatBytes } from "@/shared/utils/formatBytes";
-import { readSettings, writeSettings } from "@/core/persistence/settingsRepository";
+import { useSettingsStore } from "@/features/settings/stores/settings.store";
 import { audioManager } from "@/core/audio/audioManager";
 import { useDocReaderStore } from "@/features/docReader/stores/docReader.store";
 import { useMediaPlayerStore } from "@/features/mediaPlayer/stores/mediaPlayer.store";
@@ -19,6 +19,7 @@ import type { FsEntry } from "../filesystemClient";
 
 const { t } = useI18n();
 const store = useFilesystemStore();
+const settingsStore = useSettingsStore();
 const docReaderStore = useDocReaderStore();
 const mediaPlayerStore = useMediaPlayerStore();
 
@@ -80,15 +81,12 @@ async function activateDrive(mountPoint: string): Promise<void> {
 
 async function onToggleListView(): Promise<void> {
   store.toggleListView();
-  const settings = await readSettings().catch(() => null);
-  if (settings) await writeSettings({ ...settings, fsListView: store.listView }).catch(() => {});
+  await settingsStore.update({ fsListView: store.listView }).catch(() => {});
 }
 
 async function onToggleDotfiles(): Promise<void> {
   store.toggleHideDotfiles();
-  const settings = await readSettings().catch(() => null);
-  if (settings)
-    await writeSettings({ ...settings, hideDotfiles: store.hideDotfiles }).catch(() => {});
+  await settingsStore.update({ hideDotfiles: store.hideDotfiles }).catch(() => {});
 }
 
 const shortPath = computed(() => {
@@ -97,7 +95,7 @@ const shortPath = computed(() => {
 });
 
 onMounted(async () => {
-  const settings = await readSettings().catch(() => null);
+  const settings = settingsStore.current ?? (await settingsStore.load().catch(() => null));
   if (settings) {
     store.listView = settings.fsListView;
     store.hideDotfiles = settings.hideDotfiles;

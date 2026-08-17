@@ -4,6 +4,7 @@ import { useI18n } from "vue-i18n";
 import { check, type Update } from "@tauri-apps/plugin-updater";
 import { relaunch } from "@tauri-apps/plugin-process";
 import { openUrl } from "@tauri-apps/plugin-opener";
+import BaseModal from "@/features/modals/components/BaseModal.vue";
 
 const { t } = useI18n();
 
@@ -69,7 +70,7 @@ async function updateNow(): Promise<void> {
 }
 
 // Sin persistir el descarte en Settings: si la próxima vez que arranca la app la
-// versión instalada sigue desactualizada, este mismo banner vuelve a aparecer — es el
+// versión instalada sigue desactualizada, este mismo modal vuelve a aparecer — es el
 // comportamiento pedido, no un olvido de guardar un flag de "no preguntar de nuevo".
 function cancel(): void {
   void update.value?.close();
@@ -78,18 +79,29 @@ function cancel(): void {
 </script>
 
 <template>
-  <div
+  <BaseModal
     v-if="update && !dismissed"
-    class="update-banner"
-    data-augmented-ui="tl-clip br-clip border"
+    :title="t('update.title')"
+    :closable="!downloading"
+    width="46vw"
+    @close="cancel"
   >
-    <p class="update-banner-message">
-      <template v-if="installing">{{ t("update.installing") }}</template>
-      <template v-else-if="downloading">{{ t("update.downloading") }} {{ progress }}%</template>
-      <template v-else>{{ t("update.available", { version: update.version, current: update.currentVersion }) }}</template>
+    <p class="update-message">
+      {{ t("update.available", { version: update.version, current: update.currentVersion }) }}
     </p>
-    <p v-if="error" class="update-banner-error">{{ t("update.error") }}</p>
-    <div class="update-banner-actions">
+
+    <template v-if="update.body">
+      <h5 class="update-notes-title">{{ t("update.notesTitle") }}</h5>
+      <pre class="update-notes">{{ update.body }}</pre>
+    </template>
+
+    <p v-if="downloading || installing" class="update-progress">
+      <template v-if="installing">{{ t("update.installing") }}</template>
+      <template v-else>{{ t("update.downloading") }} {{ progress }}%</template>
+    </p>
+    <p v-if="error" class="update-error">{{ t("update.error") }}</p>
+
+    <div class="update-actions">
       <button type="button" class="update-btn" :disabled="downloading" @click="viewOnGithub">
         {{ t("update.viewOnGithub") }}
       </button>
@@ -105,45 +117,48 @@ function cancel(): void {
         {{ t("update.cancel") }}
       </button>
     </div>
-  </div>
+  </BaseModal>
 </template>
 
 <style scoped>
-.update-banner {
-  position: fixed;
-  left: 50%;
-  bottom: 1.85vh;
-  transform: translateX(-50%);
-  z-index: 250;
-  display: flex;
-  align-items: center;
-  gap: 1.4vh;
-  padding: 1vh 1.6vh;
-  max-width: 70vw;
-  background: var(--color_light_black);
-  color: rgb(var(--color_r), var(--color_g), var(--color_b));
-  font-size: calc(1.2vh * var(--ui-font-scale, 1));
-
-  --aug-border-all: 0.18vh;
-  --aug-border-bg: rgb(var(--color_r), var(--color_g), var(--color_b));
-  --aug-border-opacity: 0.7;
+.update-message {
+  margin: 0 0 1vh;
 }
 
-.update-banner-message {
-  margin: 0;
-  white-space: nowrap;
+.update-notes-title {
+  margin: 1vh 0 0.5vh;
+  font-size: calc(1.1vh * var(--ui-font-scale, 1));
+  opacity: 0.6;
+  text-transform: uppercase;
+  letter-spacing: 0.05vh;
 }
 
-.update-banner-error {
+.update-notes {
   margin: 0;
+  padding: 0.8vh 1vh;
+  max-height: 30vh;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-family: var(--font_mono), monospace;
+  font-size: calc(1.05vh * var(--ui-font-scale, 1));
+  background: rgba(var(--color_r), var(--color_g), var(--color_b), 0.06);
+  border: 0.09vh solid rgba(var(--color_r), var(--color_g), var(--color_b), 0.25);
+}
+
+.update-progress {
+  margin: 1vh 0 0;
+}
+
+.update-error {
+  margin: 1vh 0 0;
   color: #ff5f5f;
-  white-space: nowrap;
 }
 
-.update-banner-actions {
+.update-actions {
   display: flex;
   gap: 0.6vh;
-  flex-shrink: 0;
+  margin-top: 1.6vh;
 }
 
 .update-btn {

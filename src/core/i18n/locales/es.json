@@ -47,13 +47,10 @@
     "windowModeFullscreen": "Pantalla completa (predeterminado)",
     "windowModeWindowed": "Modo ventana",
     "nointro": "Saltar animación de inicio",
-    "nocursor": "Ocultar cursor del mouse",
-    "excludeThreads": "Excluir threads del listado de procesos",
     "hideDotfiles": "Ocultar archivos ocultos por defecto",
     "fsListView": "Vista de lista por defecto en el explorador",
     "experimental": "Experimental",
-    "experimentalGlobe": "Funciones experimentales del globo 3D",
-    "experimentalGeneral": "Funciones experimentales generales"
+    "experimentalGlobe": "Funciones experimentales del globo 3D"
   },
   "shortcuts": {
     "title": "Atajos de teclado",
@@ -196,7 +193,9 @@
     "line4": "Hasta la próxima."
   },
   "update": {
+    "title": "Actualización disponible",
     "available": "Hay una actualización disponible: v{version} (tenés v{current})",
+    "notesTitle": "Novedades de esta versión",
     "viewOnGithub": "Ver en GitHub",
     "updateNow": "Actualizar ahora",
     "cancel": "Cancelar",

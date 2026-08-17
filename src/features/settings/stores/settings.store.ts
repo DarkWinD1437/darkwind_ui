@@ -7,6 +7,8 @@ import { resolveLocale, setLocale } from "@/core/i18n/i18n";
 import { useThemesStore } from "@/core/theme/stores/themes.store";
 import { applyUiScale } from "@/core/theme/themeEngine";
 import { useKeyboardStore } from "@/features/keyboard/stores/keyboard.store";
+import { useFilesystemStore } from "@/features/filesystem/stores/filesystem.store";
+import { useSysinfoStore } from "@/features/sysinfo/stores/sysinfo.store";
 
 // Primer store que envuelve settings_read/settings_write de forma centralizada — hasta
 // la Fase 4 cada componente que necesitaba tocar un campo (FilesystemPanel con
@@ -60,6 +62,22 @@ export const useSettingsStore = defineStore("settings", {
           volume: next.audioVolume,
           feedbackEnabled: !next.disableFeedbackAudio,
         });
+      }
+      if (patch.pingAddr !== undefined) {
+        // Antes pingAddr se leía una sola vez al terminar el arranque y quedaba
+        // capturado por closure dentro del setInterval del ping — cambiarlo acá no
+        // hacía nada hasta reiniciar la app.
+        useSysinfoStore().setPingAddr(next.pingAddr);
+      }
+      if (patch.hideDotfiles !== undefined) {
+        // Antes FilesystemPanel solo leía hideDotfiles/fsListView al montar (arranque
+        // de la app) — cambiarlos acá no se reflejaba en el explorador ya abierto hasta
+        // reiniciar. FilesystemPanel vive fijo en AppShell sin desmontarse nunca, así
+        // que esta es la única forma de que se enteren del cambio.
+        useFilesystemStore().hideDotfiles = next.hideDotfiles;
+      }
+      if (patch.fsListView !== undefined) {
+        useFilesystemStore().listView = next.fsListView;
       }
       await Promise.all(tasks);
     },

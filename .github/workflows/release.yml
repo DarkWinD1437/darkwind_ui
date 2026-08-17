@@ -43,6 +43,23 @@ jobs:
       - name: Instalar dependencias
         run: pnpm install --frozen-lockfile
 
+      # RELEASE_NOTES.md (raíz del repo) se actualiza a mano antes de taguear cada
+      # release — antes releaseBody era un texto fijo genérico, así que lo que se
+      # pegaba en la descripción del release en GitHub nunca llegaba a latest.json
+      # (se genera UNA vez acá, durante el build; editar la descripción después en
+      # GitHub no lo vuelve a generar). Con esto el mismo texto queda tanto en la
+      # descripción del release como en el campo "notes" que la app muestra en el
+      # diálogo de actualización.
+      - name: Leer notas de la versión
+        id: notes
+        shell: bash
+        run: |
+          {
+            echo 'body<<RELEASE_NOTES_EOF'
+            cat RELEASE_NOTES.md
+            echo 'RELEASE_NOTES_EOF'
+          } >> "$GITHUB_OUTPUT"
+
       - uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -51,7 +68,7 @@ jobs:
         with:
           tagName: ${{ github.ref_name }}
           releaseName: "darkwind_ui ${{ github.ref_name }}"
-          releaseBody: "Ver el detalle de cambios en el historial de commits."
+          releaseBody: ${{ steps.notes.outputs.body }}
           # Draft a propósito: publicar un release es visible para cualquiera que
           # tenga el link del repo — queda en borrador para revisar/editar las notas
           # antes de tocar "Publish release" a mano en GitHub.

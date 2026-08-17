@@ -38,10 +38,6 @@ fn default_ping_addr() -> String {
     "1.1.1.1".into()
 }
 
-fn default_port() -> u16 {
-    3000
-}
-
 fn default_language() -> String {
     "auto".into()
 }
@@ -89,24 +85,16 @@ pub struct Settings {
     pub clock_hours: u8,
     #[serde(default = "default_ping_addr")]
     pub ping_addr: String,
-    #[serde(default = "default_port")]
-    pub port: u16,
     #[serde(default)]
     pub nointro: bool,
-    #[serde(default)]
-    pub nocursor: bool,
     #[serde(default = "default_true")]
     pub force_fullscreen: bool,
-    #[serde(default = "default_true")]
-    pub exclude_threads_from_toplist: bool,
     #[serde(default)]
     pub hide_dotfiles: bool,
     #[serde(default)]
     pub fs_list_view: bool,
     #[serde(default)]
     pub experimental_globe_features: bool,
-    #[serde(default)]
-    pub experimental_features: bool,
 }
 
 impl Default for Settings {
@@ -126,15 +114,11 @@ impl Default for Settings {
             disable_feedback_audio: false,
             clock_hours: default_clock_hours(),
             ping_addr: default_ping_addr(),
-            port: default_port(),
             nointro: false,
-            nocursor: false,
             force_fullscreen: true,
-            exclude_threads_from_toplist: true,
             hide_dotfiles: false,
             fs_list_view: false,
             experimental_globe_features: false,
-            experimental_features: false,
         }
     }
 }

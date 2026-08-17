@@ -13,15 +13,11 @@ export interface Settings {
   disableFeedbackAudio: boolean;
   clockHours: number;
   pingAddr: string;
-  port: number;
   nointro: boolean;
-  nocursor: boolean;
   forceFullscreen: boolean;
-  excludeThreadsFromToplist: boolean;
   hideDotfiles: boolean;
   fsListView: boolean;
   experimentalGlobeFeatures: boolean;
-  experimentalFeatures: boolean;
 }
 
 export interface Shortcut {
